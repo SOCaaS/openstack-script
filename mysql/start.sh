@@ -1,5 +1,5 @@
 apt update
-apt upgrade
+apt upgrade -y 
 
 #This install mysql server
 echo "Installing Mysql"
