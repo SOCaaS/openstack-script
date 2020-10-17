@@ -1,0 +1,5 @@
+CREATE DATABASE IF NOT EXISTS glance;
+
+GRANT ALL PRIVILEGES ON glance.* TO 'glance'@'localhost' IDENTIFIED BY '837ruyDA312y23djs';
+GRANT ALL PRIVILEGES ON glance.* TO 'glance'@'%' IDENTIFIED BY '837ruyDA312y23djs';
+
