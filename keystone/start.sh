@@ -10,7 +10,7 @@ echo "Installing keystone"
 apt install -y keystone
 
 # edit keystone.conf
-sed -i -e "s|^connection = .*|connection = mysql+pymysql://keystone:NCQhEHRb@controller/keystone|g" /etc/keystone/keystone.conf
+sed -i -e "s|^connection = .*|connection = mysql+pymysql://keystone:KEYSTONE_DBPASS@controller/keystone|g" /etc/keystone/keystone.conf
 
 sed -i -e "s|^provider = .*|provider = fernet|g" /etc/keystone/keystone.conf
 
@@ -22,7 +22,7 @@ keystone-manage fernet_setup --keystone-user keystone --keystone-group keystone
 keystone-manage credential_setup --keystone-user keystone --keystone-group keystone
 
 # Bootstrap the Identity service
-keystone-manage bootstrap --bootstrap-password ADMIN_PASS \
+keystone-manage bootstrap --bootstrap-password 9zExzZzL \
   --bootstrap-admin-url http://controller:5000/v3/ \
   --bootstrap-internal-url http://controller:5000/v3/ \
   --bootstrap-public-url http://controller:5000/v3/ \
@@ -36,7 +36,7 @@ service apache2 restart
 
 # set env variables	
 $ export OS_USERNAME=admin
-$ export OS_PASSWORD=ADMIN_PASS
+$ export OS_PASSWORD=9zExzZzL
 $ export OS_PROJECT_NAME=admin
 $ export OS_USER_DOMAIN_NAME=Default
 $ export OS_PROJECT_DOMAIN_NAME=Default
