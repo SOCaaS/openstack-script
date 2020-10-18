@@ -12,7 +12,7 @@ apt install -y keystone
 # edit keystone.conf
 sed -i -e "s|^connection = .*|connection = mysql+pymysql://keystone:NCQhEHRb@controller/keystone|g" /etc/keystone/keystone.conf
 
-sed -i -e "s|^provider = .*|provider = fernet|g" /etc/keystone/keystone.conf
+sed -i -e '/\[token\]/a' -e 'provider = fernet' /etc/keystone/keystone.conf
 
 # Populate the Identity service database
 su -s /bin/sh -c "keystone-manage db_sync" keystone
