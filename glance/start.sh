@@ -18,6 +18,8 @@ export OS_IDENTITY_API_VERSION=3
 echo -e "\nCreate openstack user on keystone"
 openstack user create --domain default --password "yrgehdbsjkhu32897124" glance
 
+echo -e "\nCreate a project"
+openstack project create --domain default --description "Service Project" service
 openstack role add --project service --user glance admin
 
 echo -e "\nCreate the glance service entity"
