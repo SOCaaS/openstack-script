@@ -5,9 +5,6 @@ apt upgrade -y
 echo -e "\nCreate a glance sql user"
 mysql -e "source glance.sql";
 
-echo -e "\nSource the admin credentials to gain access to admin-only CLI commands"
-. admin-openrc
-
 # Export environment variable
 echo -e "\nExport environment variable"
 export OS_USERNAME=admin
