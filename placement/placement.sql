@@ -1,0 +1,7 @@
+CREATE DATABASE IF NOT EXISTS placement;
+
+CREATE USER IF NOT EXISTS 'placement'@'%' IDENTIFIED BY 'anq9SXHR';
+
+GRANT ALL PRIVILEGES ON placement.* TO 'placement'@'%';
+
+
