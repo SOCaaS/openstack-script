@@ -36,21 +36,16 @@ apt install -y glance
 echo -e "\nEditing glance-api.conf"
 sed -i -e "s|^connection = .*|connection = mysql+pymysql://glance:837ruyDA312y23djs@controller/glance|g" /etc/glance/glance-api.conf
 
-sed -i -e "s|^www_authenticate_uri = .*|www_authenticate_uri = http://controller:5000|g" /etc/glance/glance-api.conf
-sed -i -e "s|^auth_url = .*|auth_url = http://controller:5000|g" /etc/glance/glance-api.conf
-sed -i -e "s|^memcached_servers = .*|memcached_servers = controller:11211|g" /etc/glance/glance-api.conf
-sed -i -e "s|^auth_type = .*|auth_type = password|g" /etc/glance/glance-api.conf
-sed -i -e "s|^project_domain_name = .*|project_domain_name = Default|g" /etc/glance/glance-api.conf
-sed -i -e "s|^user_domain_name = .*|user_domain_name = Default|g" /etc/glance/glance-api.conf
-sed -i -e "s|^project_name = .*|project_name = service|g" /etc/glance/glance-api.conf
-sed -i -e "s|^username = .*|username = glance|g" /etc/glance/glance-api.conf
-sed -i -e "s|^password = .*|password = yrgehdbsjkhu32897124|g" /etc/glance/glance-api.conf
+sed -i -e '/\[keystone_authtoken\]/a\' -e "www_authenticate_uri = http://controller:5000" /etc/glance/glance-api.conf
+sed -i -e '/\[keystone_authtoken\]/a\' -e "memcached_servers = controller:11211" /etc/glance/glance-api.conf
+sed -i -e '/\[keystone_authtoken\]/a\' -e "auth_type = password" /etc/glance/glance-api.conf
+sed -i -e '/\[keystone_authtoken\]/a\' -e "project_domain_name = Default" /etc/glance/glance-api.conf
+sed -i -e '/\[keystone_authtoken\]/a\' -e "user_domain_name = Default" /etc/glance/glance-api.conf
+sed -i -e '/\[keystone_authtoken\]/a\' -e "project_name = service" /etc/glance/glance-api.conf
+sed -i -e '/\[keystone_authtoken\]/a\' -e "username = glance" /etc/glance/glance-api.conf
+sed -i -e '/\[keystone_authtoken\]/a\' -e "password = yrgehdbsjkhu32897124" /etc/glance/glance-api.conf
 
 sed -i -e '/\[paste_deploy\]/a\' -e 'flavor = keystone' /etc/glance/glance-api.conf
-
-sed -i -e '/\[glance_store\]/a\' -e 'stores = file,http' /etc/glance/glance-api.conf
-sed -i -e '/\[glance_store\]/a\' -e 'default_store = file' /etc/glance/glance-api.conf
-sed -i -e '/\[glance_store\]/a\' -e 'filesystem_store_datadir = /var/lib/glance/images/' /etc/glance/glance-api.conf
 
 echo -e "\nDB Sync Glance"
 set +e
