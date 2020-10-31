@@ -6,9 +6,6 @@ apt upgrade -y
 echo "run placement.sql"
 mysql -e "source placement.sql";
 
-# Source the admin credentials to gain access to admin-only CLI commands
-. admin-openrc
-
 # create placement user and give admin role
 echo "creating openstack user 'placement'"
 openstack user create --domain default --password v3hx4vBB placement
