@@ -17,9 +17,9 @@ sed -i -e '/\[token\]/a\' -e 'provider = fernet' /etc/keystone/keystone.conf
 
 # Populate the Identity service database
 echo "populating the identity service database"
-set -e
+set +e
 su -s /bin/sh -c "keystone-manage db_sync" keystone
-set -e
+set +e
 
 # Initialize Fernet key repositories
 echo "initializing Fernet key repositories"
