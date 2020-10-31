@@ -36,7 +36,7 @@ apt install -y glance
 echo -e "\nEditing glance-api.conf"
 sed -i -e "s|^connection = .*|connection = mysql+pymysql://glance:837ruyDA312y23djs@controller/glance|g" /etc/glance/glance-api.conf
 
-sed -i -e '/^\[keystone_authtoken\]/a\' -e "www_authenticate_uri = http://controller:5000" /etc/glance/glance-api.conf
+sed -i -e '/^\[keystone_authtoken\]/a\' -e "auth_url = http://controller:5000" /etc/glance/glance-api.conf
 sed -i -e '/^\[keystone_authtoken\]/a\' -e "memcached_servers = controller:11211" /etc/glance/glance-api.conf
 sed -i -e '/^\[keystone_authtoken\]/a\' -e "auth_type = password" /etc/glance/glance-api.conf
 sed -i -e '/^\[keystone_authtoken\]/a\' -e "project_domain_name = Default" /etc/glance/glance-api.conf
@@ -58,3 +58,6 @@ set -e
 
 echo -e "\nGlance Restart"
 service glance-api restart
+
+echo -e "\n Check Glance Status"
+service glance-api status
