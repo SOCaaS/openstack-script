@@ -19,7 +19,7 @@ sed -i -e '/\[token\]/a\' -e 'provider = fernet' /etc/keystone/keystone.conf
 echo "populating the identity service database"
 set +e
 su -s /bin/sh -c "keystone-manage db_sync" keystone
-set +e
+set -e
 
 # Initialize Fernet key repositories
 echo "initializing Fernet key repositories"
@@ -47,13 +47,13 @@ service apache2 restart
 
 # set env variables	
 echo "setting env variables"
-$ export OS_USERNAME=admin
-$ export OS_PASSWORD=9zExzZzL
-$ export OS_PROJECT_NAME=admin
-$ export OS_USER_DOMAIN_NAME=Default
-$ export OS_PROJECT_DOMAIN_NAME=Default
-$ export OS_AUTH_URL=http://controller:5000/v3
-$ export OS_IDENTITY_API_VERSION=3
+export OS_USERNAME=admin
+export OS_PASSWORD=9zExzZzL
+export OS_PROJECT_NAME=admin
+export OS_USER_DOMAIN_NAME=Default
+export OS_PROJECT_DOMAIN_NAME=Default
+export OS_AUTH_URL=http://controller:5000/v3
+export OS_IDENTITY_API_VERSION=3
 
 # install openstack train
 #
