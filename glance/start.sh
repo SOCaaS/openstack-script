@@ -47,7 +47,7 @@ sed -i -e '/^\[keystone_authtoken\]/a\' -e "password = yrgehdbsjkhu32897124" /et
 
 sed -i -e '/^\[paste_deploy\]/a\' -e 'flavor = keystone' /etc/glance/glance-api.conf
 
-sed -i -e '/^\[glance_store\]/a\' -e 's|^stores = .*|stores = file,http|g' /etc/glance/glance-api.conf
+sed -i -e '/^\[glance_store\]/a\' -e 'stores = file,http' /etc/glance/glance-api.conf
 sed -i -e '/^\[glance_store\]/a\' -e 'default_store = file' /etc/glance/glance-api.conf
 sed -i -e '/^\[glance_store\]/a\' -e 'filesystem_store_datadir = /var/lib/glance/images/' /etc/glance/glance-api.conf
 
