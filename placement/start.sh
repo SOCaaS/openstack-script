@@ -6,6 +6,16 @@ apt upgrade -y
 echo "run placement.sql"
 mysql -e "source placement.sql";
 
+# export variables
+echo "export variables"
+export OS_USERNAME=admin
+export OS_PASSWORD=9zExzZzL
+export OS_PROJECT_NAME=admin
+export OS_USER_DOMAIN_NAME=Default
+export OS_PROJECT_DOMAIN_NAME=Default
+export OS_AUTH_URL=http://controller:5000/v3
+export OS_IDENTITY_API_VERSION=3
+
 # create placement user and give admin role
 echo "creating openstack user 'placement'"
 openstack user create --domain default --password v3hx4vBB placement
