@@ -26,13 +26,23 @@ openstack endpoint create --region RegionOne placement admin http://controller:8
 
 # install placement api
 echo "installing placement-api"
-apt install placement-api
+apt install -y placement-api
 
 # edit placement.conf
 echo "editing placement.conf"
 
 sed -i -e "s|^connection = .*|connection = mysql+pymysql://placement:anq9SXHR@controller/placement|g" /etc/placement/placement.conf
 
+sed -i -e '/^\[api\]/a\' -e 'auth_strategy = keystone' /etc/placement/placement.conf
+
+sed -i -e '/^\[keystone_authtoken\]/a\' -e "auth_url = http://controller:5000" /etc/placement/placement.conf
+sed -i -e '/^\[keystone_authtoken\]/a\' -e "memcached_servers = controller:11211" /etc/placement/placement.conf
+sed -i -e '/^\[keystone_authtoken\]/a\' -e "auth_type = password" /etc/placement/placement.conf
+sed -i -e '/^\[keystone_authtoken\]/a\' -e "project_domain_name = Default" /etc/placement/placement.conf
+sed -i -e '/^\[keystone_authtoken\]/a\' -e "user_domain_name = Default" /etc/placement/placement.conf
+sed -i -e '/^\[keystone_authtoken\]/a\' -e "project_name = service" /etc/placement/placement.conf
+sed -i -e '/^\[keystone_authtoken\]/a\' -e "username = placement" /etc/placement/placement.conf
+sed -i -e '/^\[keystone_authtoken\]/a\' -e "password = v3hx4vBB" /etc/placement/placement.conf
 
 # populate placement database
 echo "populate placement database"
