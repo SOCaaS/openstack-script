@@ -55,6 +55,10 @@ export OS_PROJECT_DOMAIN_NAME=Default
 export OS_AUTH_URL=http://controller:5000/v3
 export OS_IDENTITY_API_VERSION=3
 
+echo -e "\nEcho to /etc/hosts add controller"
+
+echo -e "\n127.0.0.1 controller" >> /etc/hosts
+
 # install openstack train
 #
 
