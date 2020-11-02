@@ -1,0 +1,5 @@
+CREATE DATABASE IF NOT EXISTS neutron;
+
+CREATE USER IF NOT EXISTS 'neutron'@'%' IDENTIFIED BY 'anq9SXHR';
+
+GRANT ALL PRIVILEGES ON neutron.* TO 'placement'@'%';
