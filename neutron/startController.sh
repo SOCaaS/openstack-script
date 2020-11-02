@@ -30,7 +30,7 @@ openstack endpoint create --region RegionOne network admin http://controller:969
 
 echo "\nediting metadata_agent.ini.conf"
 sed -i -e '/^\[DEFAULT\]/a\' -e "nova_metadata_host = controller" /etc/neutron/metadata_agent.ini
-sed -i -e '/^\[DEFAULT\]/a\' -e "metadata_proxy_shared_secret = METADATA_SECRET" /etc/neutron/metadata_agent.ini
+sed -i -e '/^\[DEFAULT\]/a\' -e "metadata_proxy_shared_secret = wsx32g" /etc/neutron/metadata_agent.ini
 
 echo "\nediting nova.conf"
 sed -i -e '/^\[neutron\]/a\' -e "auth_url = http://controller:5000" /etc/nova/nova.conf
@@ -42,7 +42,7 @@ sed -i -e '/^\[neutron\]/a\' -e "project_name = service" /etc/nova/nova.conf
 sed -i -e '/^\[neutron\]/a\' -e "username = neutron" /etc/nova/nova.conf
 sed -i -e '/^\[neutron\]/a\' -e "password = tewqewv" /etc/nova/nova.conf
 sed -i -e '/^\[neutron\]/a\' -e "service_metadata_proxy = true" /etc/nova/nova.conf
-sed -i -e '/^\[neutron\]/a\' -e "metadata_proxy_shared_secret = METADATA_SECRET" /etc/nova/nova.conf
+sed -i -e '/^\[neutron\]/a\' -e "metadata_proxy_shared_secret = wsx32g" /etc/nova/nova.conf
 
 echo "\nfinalize installation"
 echo "\npopulate database"
