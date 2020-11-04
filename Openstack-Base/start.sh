@@ -26,6 +26,7 @@ echo "installing erlang"
 apt-get install -y wget
 wget -O- https://packages.erlang-solutions.com/ubuntu/erlang_solutions.asc | apt-key add -
 echo "deb https://packages.erlang-solutions.com/ubuntu focal contrib" | tee /etc/apt/sources.list.d/rabbitmq.list
+apt update
 
 apt install -y erlang
 echo "install rabbitMQ"
@@ -39,8 +40,7 @@ apt install -y rabbitmq-server
 systemctl status rabbitmq-server.service
 
 rabbitmq-plugins enable rabbitmq_management
-ufw allow proto tcp from any to any port 5672,15672
 
-rabbitmqctl add_user admin HELP123
+rabbitmqctl add_user admin r32uhdejnkaskj
 rabbitmqctl set_user_tags admin administrator
 
