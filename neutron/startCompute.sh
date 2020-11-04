@@ -19,7 +19,7 @@ echo "\ninstalling compute node"
 apt install neutron-linuxbridge-agent
 
 echo "\nediting neutron.conf"
-sed -i -e '/^\[DEFAULT\]/a\' -e "transport_url = rabbit://openstack:HELP123@controller" /etc/neutron/neutron.conf
+sed -i -e '/^\[DEFAULT\]/a\' -e "transport_url = rabbit://openstack:r32uhdejnkaskj@controller" /etc/neutron/neutron.conf
 sed -i -e '/^\[DEFAULT\]/a\' -e 'auth_strategy = keystone' /etc/neutron/neutron.conf
 sed -i -e '/^\[keystone_authtoken\]/a\' -e "auth_url = http://controller:5000" /etc/neutron/neutron.conf
 sed -i -e '/^\[keystone_authtoken\]/a\' -e "memcached_servers = controller:11211" /etc/neutron/neutron.conf
