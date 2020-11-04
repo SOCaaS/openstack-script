@@ -1,9 +1,6 @@
-CREATE DATABASE IF NOT EXISTS nova_api;
 CREATE DATABASE IF NOT EXISTS nova;
-CREATE DATABASE IF NOT EXISTS nova_cell0;
 
 CREATE USER IF NOT EXISTS 'nova'@'%' IDENTIFIED BY 'anq9SXHR';
 
-GRANT ALL PRIVILEGES ON nova_api.* TO 'nova'@'%';
-GRANT ALL PRIVILEGES ON nova.* TO 'nova'@'%';
-GRANT ALL PRIVILEGES ON nova_cell0.* TO 'nova'@'%';
+GRANT ALL PRIVILEGES ON placement.* TO 'nova'@'%';
+GRANT ALL PRIVILEGES ON placement.* TO 'placement'@'localhost';
