@@ -106,4 +106,11 @@ service neutron-linuxbridge-agent restart
 service neutron-dhcp-agent restart
 service neutron-metadata-agent restart
 
+echo "\ninstalling compute node"
+apt install neutron-linuxbridge-agent
 
+echo "\nrestart compute service"
+service nova-compute restart
+
+echo "\nrestart linux bridge agent"
+service neutron-linuxbridge-agent restart
