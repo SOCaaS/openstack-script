@@ -28,11 +28,20 @@ echo "install nova API"
 apt install nova-api nova-conductor nova-novncproxy nova-scheduler
 
 echo "editting nova.conf"
-sed -i -e '/^\[api_database\]/a\' -e 'connection = mysql+pymysql://nova:anq9SXHR@controller/nova' /etc/nova/nova.conf
+#commenting connection
+sed -i -e "s|^connection = .*|#connection = .*|g" /etc/nova/nova.conf
+
+#change api_db and db credential
+sed -i -e '/^\[api_database\]/a\' -e 'connection = mysql+pymysql://nova:anq9SXHR@controller/nova_api' /etc/nova/nova.conf
 sed -i -e '/^\[database\]/a\' -e 'connection = mysql+pymysql://nova:anq9SXHR@controller/nova' /etc/nova/nova.conf
 
-sed -i -e '/^\[DEFAULT\]/a\' -e 'transport_url = rabbit://openstack:RABBIT_PASS@controller:5672' /etc/nova/nova.conf
+#change rabit mq message
+sed -i -e '/^\[DEFAULT\]/a\' -e 'transport_url = rabbit://openstack:r32uhdejnkaskj@controller:5672' /etc/nova/nova.conf
+
+#change api and keystone auth token
 sed -i -e '/^\[api\]/a\' -e 'auth_strategy = keystone' /etc/nova/nova.conf
+
+
 sed -i -e '/^\[keystone_authoken\]/a\' -e 'www_authenticate_uri = http://controller:5000/' /etc/nova/nova.conf
 sed -i -e '/^\[keystone_authoken\]/a\' -e 'auth_url = http://controller:5000/' /etc/nova/nova.conf
 sed -i -e '/^\[keystone_authoken\]/a\' -e 'memcached_servers = controller:11211' /etc/nova/nova.conf
@@ -42,20 +51,21 @@ sed -i -e '/^\[keystone_authoken\]/a\' -e 'user_domain_name = Default' /etc/nova
 sed -i -e '/^\[keystone_authoken\]/a\' -e 'project_name = service' /etc/nova/nova.conf
 sed -i -e '/^\[keystone_authoken\]/a\' -e 'username = nova' /etc/nova/nova.conf
 sed -i -e '/^\[keystone_authoken\]/a\' -e 'password = v3hx4vBB' /etc/nova/nova.conf
-
+#change ip
 sed -i -e '/^\[DEFAULT\]/a\' -e 'my_ip = 10.0.0.11' /etc/nova/nova.conf
-
+#vnc
 sed -i -e '/^\[vnc\]/a\' -e 'enabled = true' /etc/nova/nova.conf
 sed -i -e '/^\[vnc\]/a\' -e 'server_listen = $my_ip' /etc/nova/nova.conf
 sed -i -e '/^\[vnc\]/a\' -e 'server_proxyclient_address = $my_ip' /etc/nova/nova.conf
 
-
+#glance
 sed -i -e '/^\[glance\]/a\' -e 'api_servers = http://controller:9292' /etc/nova/nova.conf
 
-
+#oslo_concurrency
 sed -i -e '/^\[oslo_concurrency\]/a\' -e 'lock_path=/var/lib/nova/tmp' /etc/nova/nova.conf
+sed -i '/log_dir/d' /etc/nova/nova.conf
 
-
+#placement pass
 sed -i -e '/^\[placement\]/a\' -e 'region_name = RegionOne' /etc/nova/nova.conf
 sed -i -e '/^\[placement\]/a\' -e 'project_domain_name = Default' /etc/nova/nova.conf
 sed -i -e '/^\[placement\]/a\' -e 'project_name = service' /etc/nova/nova.conf
@@ -79,6 +89,3 @@ service nova-api restart
 service nova-scheduler restart
 service nova-conductor restart
 service nova-novncproxy restart
-
-
-
