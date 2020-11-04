@@ -29,7 +29,7 @@ openstack endpoint create --region RegionOne network internal http://controller:
 openstack endpoint create --region RegionOne network admin http://controller:9696
 
 echo "\nInstalling networking option1"
-apt install neutron-server neutron-plugin-ml2 neutron-linuxbridge-agent neutron-dhcp-agent neutron-metadata-agent
+apt install -y neutron-server neutron-plugin-ml2 neutron-linuxbridge-agent neutron-dhcp-agent neutron-metadata-agent
 
 echo "\neditting neutron.conf"
 sed -i -e "s|^connection = .*|connection = mysql+pymysql://neutron:tewqewv@controller/neutron|g" /etc/neutron/neutron.conf
@@ -107,7 +107,7 @@ service neutron-dhcp-agent restart
 service neutron-metadata-agent restart
 
 echo "\ninstalling compute node"
-apt install neutron-linuxbridge-agent
+apt install -y neutron-linuxbridge-agent
 
 echo "\nrestart compute service"
 service nova-compute restart
