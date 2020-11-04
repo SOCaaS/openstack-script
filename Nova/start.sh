@@ -31,7 +31,7 @@ echo "editting nova.conf"
 sed -i -e '/^\[api_database\]/a\' -e 'connection = mysql+pymysql://nova:anq9SXHR@controller/nova' /etc/nova/nova.conf
 sed -i -e '/^\[database\]/a\' -e 'connection = mysql+pymysql://nova:anq9SXHR@controller/nova' /etc/nova/nova.conf
 
-sed -i -e '/^\[DEFAULT\]/a\' -e 'transport_url = rabbit://openstack:HELP123@controller:5672' /etc/nova/nova.conf
+sed -i -e '/^\[DEFAULT\]/a\' -e 'transport_url = rabbit://openstack:r32uhdejnkaskj@controller:5672' /etc/nova/nova.conf
 sed -i -e '/^\[api\]/a\' -e 'auth_strategy = keystone' /etc/nova/nova.conf
 sed -i -e '/^\[keystone_authoken\]/a\' -e 'www_authenticate_uri = http://controller:5000/' /etc/nova/nova.conf
 sed -i -e '/^\[keystone_authoken\]/a\' -e 'auth_url = http://controller:5000/' /etc/nova/nova.conf
