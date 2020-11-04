@@ -24,22 +24,12 @@ sed -i -e '/^\[DEFAULT\]/a\' -e 'auth_strategy = keystone' /etc/neutron/neutron.
 sed -i -e '/^\[keystone_authtoken\]/a\' -e "auth_url = http://controller:5000" /etc/neutron/neutron.conf
 sed -i -e '/^\[keystone_authtoken\]/a\' -e "memcached_servers = controller:11211" /etc/neutron/neutron.conf
 sed -i -e '/^\[keystone_authtoken\]/a\' -e "auth_type = password" /etc/neutron/neutron.conf
-sed -i -e '/^\[keystone_authtoken\]/a\' -e "project_domain_name = default" /etc/neutron/neutron.conf
-sed -i -e '/^\[keystone_authtoken\]/a\' -e "user_domain_name = default" /etc/neutron/neutron.conf
+sed -i -e '/^\[keystone_authtoken\]/a\' -e "project_domain_name = Default" /etc/neutron/neutron.conf
+sed -i -e '/^\[keystone_authtoken\]/a\' -e "user_domain_name = Default" /etc/neutron/neutron.conf
 sed -i -e '/^\[keystone_authtoken\]/a\' -e "project_name = service" /etc/neutron/neutron.conf
 sed -i -e '/^\[keystone_authtoken\]/a\' -e "username = neutron" /etc/neutron/neutron.conf
 sed -i -e '/^\[keystone_authtoken\]/a\' -e "password = tewqewv" /etc/neutron/neutron.conf
 sed -i -e '/^\[oslo_concurrency\]/a\' -e "lock_path = /var/lib/neutron/tmp" /etc/neutron/neutron.conf
-
-echo "\nediting nova.conf"
-sed -i -e '/^\[neutron\]/a\' -e "auth_url = http://controller:5000" /etc/nova/nova.conf
-sed -i -e '/^\[neutron\]/a\' -e "auth_type = password" /etc/nova/nova.conf
-sed -i -e '/^\[neutron\]/a\' -e "project_domain_name = default" /etc/nova/nova.conf
-sed -i -e '/^\[neutron\]/a\' -e "user_domain_name = default" /etc/nova/nova.conf
-sed -i -e '/^\[neutron\]/a\' -e "region_name = RegionOne" /etc/nova/nova.conf
-sed -i -e '/^\[neutron\]/a\' -e "project_name = service" /etc/nova/nova.conf
-sed -i -e '/^\[neutron\]/a\' -e "username = neutron" /etc/nova/nova.conf
-sed -i -e '/^\[neutron\]/a\' -e "password = tewqewv" /etc/nova/nova.conf
 
 echo "\nrestart compute service"
 service nova-compute restart
