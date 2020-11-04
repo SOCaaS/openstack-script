@@ -32,7 +32,7 @@ echo "\nInstalling networking option1"
 apt install -y neutron-server neutron-plugin-ml2 neutron-linuxbridge-agent neutron-dhcp-agent neutron-metadata-agent
 
 echo "\neditting neutron.conf"
-sed -i -e "s|^connection = .*|connection = mysql+pymysql://neutron:tewqewv@controller/neutron|g" /etc/neutron/neutron.conf
+sed -i -e "s|^connection = .*|connection = mysql+pymysql://neutron:anq9SXHR@controller/neutron|g" /etc/neutron/neutron.conf
 sed -i -e '/^\[DEFAULT\]/a\' -e "core_plugin = m12" /etc/neutron/neutron.conf
 sed -i -e '/^\[DEFAULT\]/a\' -e "service_plugin = " /etc/neutron/neutron.conf
 sed -i -e '/^\[DEFAULT\]/a\' -e "transport_url = rabbit://openstack:r32uhdejnkaskj@controller" /etc/neutron/neutron.conf
