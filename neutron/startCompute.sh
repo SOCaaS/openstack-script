@@ -18,19 +18,6 @@ export OS_IDENTITY_API_VERSION=3
 echo "\ninstalling compute node"
 apt install neutron-linuxbridge-agent
 
-echo "\nediting neutron.conf"
-sed -i -e '/^\[DEFAULT\]/a\' -e "transport_url = rabbit://openstack:r32uhdejnkaskj@controller" /etc/neutron/neutron.conf
-sed -i -e '/^\[DEFAULT\]/a\' -e 'auth_strategy = keystone' /etc/neutron/neutron.conf
-sed -i -e '/^\[keystone_authtoken\]/a\' -e "auth_url = http://controller:5000" /etc/neutron/neutron.conf
-sed -i -e '/^\[keystone_authtoken\]/a\' -e "memcached_servers = controller:11211" /etc/neutron/neutron.conf
-sed -i -e '/^\[keystone_authtoken\]/a\' -e "auth_type = password" /etc/neutron/neutron.conf
-sed -i -e '/^\[keystone_authtoken\]/a\' -e "project_domain_name = Default" /etc/neutron/neutron.conf
-sed -i -e '/^\[keystone_authtoken\]/a\' -e "user_domain_name = Default" /etc/neutron/neutron.conf
-sed -i -e '/^\[keystone_authtoken\]/a\' -e "project_name = service" /etc/neutron/neutron.conf
-sed -i -e '/^\[keystone_authtoken\]/a\' -e "username = neutron" /etc/neutron/neutron.conf
-sed -i -e '/^\[keystone_authtoken\]/a\' -e "password = tewqewv" /etc/neutron/neutron.conf
-sed -i -e '/^\[oslo_concurrency\]/a\' -e "lock_path = /var/lib/neutron/tmp" /etc/neutron/neutron.conf
-
 echo "\nrestart compute service"
 service nova-compute restart
 
