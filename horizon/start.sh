@@ -40,11 +40,9 @@ sed -i -e "s|^OPENSTACK_KEYSTONE_DEFAULT_ROLE = .*|OPENSTACK_KEYSTONE_DEFAULT_RO
 
 # openstack neutron network
 # If you chose networking option 1, disable support for layer-3 networking services:
-# idk which one will we choose
 
 #OPENSTACK_NEUTRON_NETWORK = {
 #    ...
-#    'enable_router': False,
 #    'enable_quotas': False,
 #    'enable_ipv6': False,
 #    'enable_distributed_router': False,
@@ -55,8 +53,21 @@ sed -i -e "s|^OPENSTACK_KEYSTONE_DEFAULT_ROLE = .*|OPENSTACK_KEYSTONE_DEFAULT_RO
 #    'enable_fip_topology_check': False,
 #}
 
+sed -i -e "s|^'enable_quotas' : .*|'enable_quotas' : False,|g" /etc/openstack-dashboard/local_settings.py
+sed -i -e "s|^'enable_ipv6' : .*|'enable_ipv6' : False,|g" /etc/openstack-dashboard/local_settings.py
+sed -i -e "s|^'enable_distributed_router' : .*|'enable_distributed_router' : False,|g" /etc/openstack-dashboard/local_settings.py
+sed -i -e "s|^'enable_ha_router' : .*|'enable_ha_router' : False,|g" /etc/openstack-dashboard/local_settings.py
+sed -i -e "s|^'enable_lb' : .*|'enable_lb' : False,|g" /etc/openstack-dashboard/local_settings.py
+sed -i -e "s|^'enable_firewall' : .*|'enable_firewall' : False,|g" /etc/openstack-dashboard/local_settings.py
+sed -i -e "s|^'enable_vpn' : .*|'enable_vpn' : False,|g" /etc/openstack-dashboard/local_settings.py
+sed -i -e "s|^'enable_fip_topology_check' : .*|'enable_fip_topology_check' : False,|g" /etc/openstack-dashboard/local_settings.py
+
 # time zone setting
 sed -i -e "s|^TIME_ZONE = .*|TIME_ZONE = \"AU\"|g" /etc/openstack-dashboard/local_settings.py
 
+echo "WSGIApplicationGroup %{GLOBAL}" >> /etc/apache2/conf-available/openstack-dashboard.conf
+
 echo "reload web server config"
 systemctl reload apache2.service
+
+
