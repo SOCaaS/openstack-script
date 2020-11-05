@@ -25,7 +25,8 @@ openstack endpoint create --region RegionOne compute internal http://controller:
 openstack endpoint create --region RegionOne compute admin http://controller:8774/v2.1
 
 echo "install nova API"
-apt install nova-api nova-conductor nova-novncproxy nova-scheduler
+apt install -y nova-api nova-conductor nova-novncproxy nova-scheduler
+apt install -y nova-compute
 
 echo "editting nova.conf"
 #commenting connection
@@ -42,21 +43,22 @@ sed -i -e '/^\[DEFAULT\]/a\' -e 'transport_url = rabbit://openstack:r32uhdejnkas
 sed -i -e '/^\[api\]/a\' -e 'auth_strategy = keystone' /etc/nova/nova.conf
 
 
-sed -i -e '/^\[keystone_authoken\]/a\' -e 'www_authenticate_uri = http://controller:5000/' /etc/nova/nova.conf
-sed -i -e '/^\[keystone_authoken\]/a\' -e 'auth_url = http://controller:5000/' /etc/nova/nova.conf
-sed -i -e '/^\[keystone_authoken\]/a\' -e 'memcached_servers = controller:11211' /etc/nova/nova.conf
-sed -i -e '/^\[keystone_authoken\]/a\' -e 'auth_type=password' /etc/nova/nova.conf
-sed -i -e '/^\[keystone_authoken\]/a\' -e 'project_domain_name = Default' /etc/nova/nova.conf
-sed -i -e '/^\[keystone_authoken\]/a\' -e 'user_domain_name = Default' /etc/nova/nova.conf
-sed -i -e '/^\[keystone_authoken\]/a\' -e 'project_name = service' /etc/nova/nova.conf
-sed -i -e '/^\[keystone_authoken\]/a\' -e 'username = nova' /etc/nova/nova.conf
-sed -i -e '/^\[keystone_authoken\]/a\' -e 'password = v3hx4vBB' /etc/nova/nova.conf
+sed -i -e '/^\[keystone_authtoken\]/a\' -e 'www_authenticate_uri = http://controller:5000/' /etc/nova/nova.conf
+sed -i -e '/^\[keystone_authtoken\]/a\' -e 'auth_url = http://controller:5000/' /etc/nova/nova.conf
+sed -i -e '/^\[keystone_authtoken\]/a\' -e 'memcached_servers = controller:11211' /etc/nova/nova.conf
+sed -i -e '/^\[keystone_authtoken\]/a\' -e 'auth_type=password' /etc/nova/nova.conf
+sed -i -e '/^\[keystone_authtoken\]/a\' -e 'project_domain_name = Default' /etc/nova/nova.conf
+sed -i -e '/^\[keystone_authtoken\]/a\' -e 'user_domain_name = Default' /etc/nova/nova.conf
+sed -i -e '/^\[keystone_authtoken\]/a\' -e 'project_name = service' /etc/nova/nova.conf
+sed -i -e '/^\[keystone_authtoken\]/a\' -e 'username = nova' /etc/nova/nova.conf
+sed -i -e '/^\[keystone_authtoken\]/a\' -e 'password = v3hx4vBB' /etc/nova/nova.conf
 #change ip
 sed -i -e '/^\[DEFAULT\]/a\' -e 'my_ip = 10.0.0.11' /etc/nova/nova.conf
 #vnc
 sed -i -e '/^\[vnc\]/a\' -e 'enabled = true' /etc/nova/nova.conf
 sed -i -e '/^\[vnc\]/a\' -e 'server_listen = $my_ip' /etc/nova/nova.conf
 sed -i -e '/^\[vnc\]/a\' -e 'server_proxyclient_address = $my_ip' /etc/nova/nova.conf
+sed -i -e '/^\[vnc\]/a\' -e 'novncproxy_base_url = http://controller:6080/vnc_auto.html' /etc/nova/nova.conf
 
 #glance
 sed -i -e '/^\[glance\]/a\' -e 'api_servers = http://controller:9292' /etc/nova/nova.conf
@@ -89,3 +91,12 @@ service nova-api restart
 service nova-scheduler restart
 service nova-conductor restart
 service nova-novncproxy restart
+egrep -c '(vmx|svm)' /proc/cpuinfo
+sed -i -e '/^\[libvirt\]/a\' -e 'virt_type = qemu' /etc/nova/nova-compute.conf
+
+service nova-compute restart
+
+openstack compute service list --service nova-compute
+su -s /bin/sh -c "nova-manage cell_v2 discover_hosts --verbose" nova
+
+sed -i -e '/^\[scheduler\]/a\' -e 'discover_hosts_in_cells_interval = 300' /etc/nova/nova-compute.conf
