@@ -34,3 +34,4 @@ cd ./neutron
 ./start.sh
 cd ..
 
+echo -e "Finish, all service has been deployed!"
