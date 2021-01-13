@@ -1,5 +1,8 @@
 pipeline {
     agent none 
+    environment {
+        DIGITALOCEAN_TOKEN = ${env.digitalocean_token}
+    }
     stages {
         stage('Create / Delete') {
             agent {
@@ -26,8 +29,7 @@ pipeline {
                 }
             }
             steps {
-                sh 'echo ${env.SOCAAS_WEBHOOK}'
-                // sh 'doctl -t ${env.digitalocean_token} compute droplet-action rebuild 226103135 --image ubuntu-20-04-x64'
+                sh 'doctl -t ${DIGITALOCEAN_TOKEN} compute droplet-action rebuild 226103135 --image ubuntu-20-04-x64'
                 echo 'Finished'
             }
         }
