@@ -1,7 +1,7 @@
 pipeline {
     agent none 
     environment {
-        DIGITALOCEAN_TOKEN = env.digitalocean_token
+        DIGITALOCEAN_TOKEN = "${env.digitalocean_token}"
     }
     stages {
         stage('Create / Delete') {
