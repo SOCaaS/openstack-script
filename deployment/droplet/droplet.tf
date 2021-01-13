@@ -13,6 +13,6 @@ resource "digitalocean_droplet" "server" {
   region            = "sgp1"
   size              = var.servers[count.index]["type"]
   ssh_keys          = [data.digitalocean_ssh_key.ssh_key_id.id] # ssh key id
-  user_data         = base64encode(data.template_file.user_data.rendered)
+  user_data         = data.template_file.user_data.rendered
   private_networking = true
 }
