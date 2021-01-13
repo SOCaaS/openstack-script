@@ -26,7 +26,7 @@ pipeline {
                 }
             }
             steps {
-                sh 'doctl --version'
+                sh 'doctl'
                 echo 'Finished'
             }
         }

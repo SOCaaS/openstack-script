@@ -1,7 +1,9 @@
 #!/bin/bash
+curl -X POST -H "Content-Type: application/json" -d '{"username": "DigitalOcean", "content": "Script Openstack Started"}' "https://discord.com/api/webhooks/784998511519334500/Ys5GLuUn3uWM9N-_xuV_BQZnnNNWqqHIKkTVOoT7zY-7UTo64DqRmyhszW2Beq8hIhFY"
 cd /root/
 git clone https://a0dbcfb829f5cd2d19ea6394de2022fcc81fe14a@github.com/SOCaaS/script-openstack
 cd script-openstack
 ./start.sh
 cd /root/
 rm -rf script-openstack
+curl -X POST -H "Content-Type: application/json" -d '{"username": "DigitalOcean", "content": "Script Openstack Finished"}' "https://discord.com/api/webhooks/784998511519334500/Ys5GLuUn3uWM9N-_xuV_BQZnnNNWqqHIKkTVOoT7zY-7UTo64DqRmyhszW2Beq8hIhFY"
