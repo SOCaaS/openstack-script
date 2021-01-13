@@ -26,7 +26,8 @@ pipeline {
                 }
             }
             steps {
-                sh 'doctl -t ${env.digitalocean_token} compute droplet-action rebuild 226103135 --image ubuntu-20-04-x64'
+                sh 'echo ${env.SOCAAS_WEBHOOK}'
+                // sh 'doctl -t ${env.digitalocean_token} compute droplet-action rebuild 226103135 --image ubuntu-20-04-x64'
                 echo 'Finished'
             }
         }
