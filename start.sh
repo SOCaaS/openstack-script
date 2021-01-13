@@ -30,7 +30,7 @@ cd ./neutron
 cd ..
 
 echo -e "\nStart Horizon!"
-cd ./neutron
+cd ./horizon
 ./start.sh
 cd ..
 

@@ -22,11 +22,11 @@ pipeline {
         stage('Rebuild') {
             agent {
                 docker {
-                    image 'base/digitalocean-doctl:latest'
+                    image 'base/digitalocean-doctl:latest' 
                 }
             }
             steps {
-                sh 'doctl'
+                sh 'doctl -t ${env.digitalocean_token} compute droplet-action rebuild 226103135 --image ubuntu-20-04-x64'
                 echo 'Finished'
             }
         }
