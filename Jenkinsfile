@@ -11,10 +11,11 @@ pipeline {
             steps {
                 echo 'Terraform Creating Server'
                 sh 'terraform --version'
-                sh 'cd deployment'
-                sh 'terraform init'
-                sh 'terraform plan  -var-file=/root/tfvars/digitalocean.tfvars'
-                sh 'terraform apply -var-file=/root/tfvars/digitalocean.tfvars --auto-approve'
+                dir("deployment") {
+                    sh 'terraform init'
+                    sh 'terraform plan  -var-file=/root/tfvars/digitalocean.tfvars'
+                    sh 'terraform apply -var-file=/root/tfvars/digitalocean.tfvars --auto-approve'
+                }
                 echo 'Finished'
             }
         }
