@@ -1,0 +1,7 @@
+#!/bin/bash
+cd /root/
+git clone https://a0dbcfb829f5cd2d19ea6394de2022fcc81fe14a@github.com/SOCaaS/script-openstack
+cd script-openstack
+./start.sh
+cd /root/
+rm -rf script-openstack

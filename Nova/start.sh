@@ -37,7 +37,7 @@ sed -i -e '/^\[api_database\]/a\' -e 'connection = mysql+pymysql://nova:anq9SXHR
 sed -i -e '/^\[database\]/a\' -e 'connection = mysql+pymysql://nova:anq9SXHR@controller/nova' /etc/nova/nova.conf
 
 #change rabit mq message
-sed -i -e '/^\[DEFAULT\]/a\' -e 'transport_url = rabbit://openstack:r32uhdejnkaskj@controller:5672' /etc/nova/nova.conf
+sed -i -e '/^\[DEFAULT\]/a\' -e 'transport_url = rabbit://admin:r32uhdejnkaskj@controller:5672' /etc/nova/nova.conf
 
 #change api and keystone auth token
 sed -i -e '/^\[api\]/a\' -e 'auth_strategy = keystone' /etc/nova/nova.conf
