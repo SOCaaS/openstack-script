@@ -35,7 +35,7 @@ echo "\neditting neutron.conf"
 sed -i -e "s|^connection = .*|connection = mysql+pymysql://neutron:anq9SXHR@controller/neutron|g" /etc/neutron/neutron.conf
 sed -i -e '/^\[DEFAULT\]/a\' -e "core_plugin = m12" /etc/neutron/neutron.conf
 sed -i -e '/^\[DEFAULT\]/a\' -e "service_plugin = " /etc/neutron/neutron.conf
-sed -i -e '/^\[DEFAULT\]/a\' -e "transport_url = rabbit://openstack:r32uhdejnkaskj@controller" /etc/neutron/neutron.conf
+sed -i -e '/^\[DEFAULT\]/a\' -e "transport_url = rabbit://admin:r32uhdejnkaskj@controller" /etc/neutron/neutron.conf
 sed -i -e '/^\[DEFAULT\]/a\' -e "auth_strategy = keystone" /etc/neutron/neutron.conf
 sed -i -e '/^\[keystone_authtoken\]/a\' -e "www_authenticate_uri = http://controller:5000" /etc/neutron/neutron.conf
 sed -i -e '/^\[keystone_authtoken\]/a\' -e "auth_url = http://controller:5000" /etc/neutron/neutron.conf
