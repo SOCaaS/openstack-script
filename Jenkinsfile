@@ -26,7 +26,7 @@ pipeline {
                 }
             }
             steps {
-                // sh 'doctl compute droplet-action rebuild 226105350 -t ${DIGITALOCEAN_TOKEN} --image ubuntu-20-04-x64 --wait'
+                sh 'doctl compute droplet-action rebuild 226306913 -t ${DIGITALOCEAN_TOKEN} --image ubuntu-20-04-x64 --wait'
                 echo 'Finished'
             }
         }
