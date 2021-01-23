@@ -38,8 +38,8 @@ pipeline {
                         doctl compute droplet-action rebuild $(cat /root/tfstate/script-openstack-do.tfstate | jq \'.["outputs"]["ids"]["value"][0]\' | sed \'s|"||g\' ) -t ${DIGITALOCEAN_TOKEN} --image ubuntu-20-04-x64 --wait
                         ping -c 20 $(cat /root/tfstate/script-openstack-do.tfstate | jq \'.["outputs"]["ips"]["value"][0]\' | sed \'s|"||g\' )
                         echo "Ping Finished!"
-                        
-                        scp -o StrictHostKeyChecking=no -i /root/.ssh/id_rsa -r ./ root@$(cat /root/tfstate/script-openstack-do.tfstate | jq \'.["outputs"]["ips"]["value"][0]\' | sed \'s|"||g\' ):/root/script-openstack/
+
+                        scp -o StrictHostKeyChecking=no -i /root/.ssh/id_rsa -r $PWD root@$(cat /root/tfstate/script-openstack-do.tfstate | jq \'.["outputs"]["ips"]["value"][0]\' | sed \'s|"||g\' ):/root/script-openstack/
                         ssh -o StrictHostKeyChecking=no -i /root/.ssh/id_rsa root@$(cat /root/tfstate/script-openstack-do.tfstate | jq \'.["outputs"]["ips"]["value"][0]\' | sed \'s|"||g\' ) "cd /root/script-openstack/; ./start.sh"
                     fi 
                 '''
