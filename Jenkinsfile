@@ -25,7 +25,7 @@ pipeline {
             agent {
                 docker {
                     image 'base/digitalocean-doctl:latest' 
-                    args  '-v /root/tfstate:/root/tfstate -v /home/ezeutno/.ssh:/root/.ssh'
+                    args  '-v /root/tfstate:/root/tfstate -v /home/ezeutno/.ssh/id_rsa:/root/.ssh/id_rsa'
                 }
             }
             steps {
