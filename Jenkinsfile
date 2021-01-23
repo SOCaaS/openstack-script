@@ -30,7 +30,7 @@ pipeline {
             }
             steps {
                 sh '''#!/bin/bash
-                    if [ -z $(cat /root/tfstate/script-openstack-do.tfstate | jq \'.["outputs"]["ids"]["value"][0]\') ] 
+                    if [ $(cat /root/tfstate/script-openstack-do.tfstate | jq \'.["outputs"]["ids"]["value"][0]\') == null ] 
                     then 
                         echo "This is clear!"; 
                     else
