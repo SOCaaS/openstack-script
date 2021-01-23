@@ -30,8 +30,12 @@ pipeline {
             }
             steps {
                 sh '''#!/bin/bash
-                    IDS = $(cat /root/tfstate/script-openstack-do.tfstate | jq \'.["outputs"]["ids"]["value"][0]\')
-                    if [ -z "$IDS" ] then echo lol; fi 
+                    IDS = $(cat /root/tfstate/script-openstack-servers.tfstate.backup | jq \'.["outputs"]["ids"]["value"][0]\')
+                    echo $IDS
+                    if [ -z "$IDS" ] 
+                    then 
+                        echo lol; 
+                    fi 
 
                 '''
                 sh 'cat /root/tfstate/script-openstack-do.tfstate | jq \'.["outputs"]["ids"]["value"][0]\''
