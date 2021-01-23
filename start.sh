@@ -1,6 +1,6 @@
 echo -e "Start All Service at Once!"
 echo -e "\nStart base Openstack!"
-cd ./Openstack-Base
+cd ./openstack-base
 ./start.sh
 cd ..
 
@@ -20,7 +20,7 @@ cd ./placement
 cd ..
 
 echo -e "\nStart Nova!"
-cd ./Nova
+cd ./nova
 ./start.sh
 cd ..
 
