@@ -12,9 +12,11 @@ pipeline {
                 echo 'Terraform Creating Server'
                 sh 'terraform --version'
                 dir("deployment") {
-                    sh 'terraform init'
-                    sh 'terraform plan  -var-file=/root/tfvars/do-contabo.tfvars'
-                    sh 'terraform apply -var-file=/root/tfvars/do-contabo.tfvars --auto-approve'
+                    sh '''#!/bin/bash
+                        terraform init
+                        terraform plan  -var-file=/root/tfvars/do-contabo.tfvars
+                        terraform apply -var-file=/root/tfvars/do-contabo.tfvars --auto-approve
+                    '''
                 }
                 echo 'Finished'
             }
@@ -26,15 +28,17 @@ pipeline {
                     args  '-v /root/tfstate:/root/tfstate'
                 }
             }
-            environment {
-                script {
-                    OUTPUT = sh returnStdout: true,
-                            script: 'cat /root/tfstate/script-openstack-servers.tfstate.backup | jq \'.["outputs"]["ids"]["value"][0]\''
-                    echo OUTPUT
-                }   
-            }
             steps {
-                sh 'cat /root/tfstate/script-openstack-servers.tfstate.backup | jq \'.["outputs"]["ids"]["value"][0]\''
+                sh '''#!/bin/bash
+                    IDS = ${cat /root/tfstate//root/tfstate/script-openstack-do.tfstate | jq \'.["outputs"]["ids"]["value"][0]\'}
+                    if [ IDS != "" ] then
+                        echo $IDS
+                    else
+                        echo "WTF!
+                    fi
+                '''
+                sh 'cat /root/tfstate//root/tfstate/script-openstack-do.tfstate | jq \'.["outputs"]["ids"]["value"][0]\''
+                if 
                 // sh 'doctl compute droplet-action rebuild 226306913 -t ${DIGITALOCEAN_TOKEN} --image ubuntu-20-04-x64 --wait'
                 echo 'Finished'
             }
