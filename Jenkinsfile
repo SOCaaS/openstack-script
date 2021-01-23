@@ -34,7 +34,7 @@ pipeline {
                     if [ IDS != "" ] then
                         echo $IDS
                     else
-                        echo "WTF!
+                        echo "WTF!"
                     fi
                 '''
                 sh 'cat /root/tfstate//root/tfstate/script-openstack-do.tfstate | jq \'.["outputs"]["ids"]["value"][0]\''
