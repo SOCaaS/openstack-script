@@ -26,9 +26,14 @@ pipeline {
                     args  '-v /root/tfstate:/root/tfstate'
                 }
             }
+            environment {
+                script {
+                    OUTPUT = sh returnStdout: true,
+                            script: 'cat /root/tfstate/script-openstack-servers.tfstate.backup | jq \'.["outputs"]["ids"]["value"][0]\''
+                    echo OUTPUT
+                }   
+            }
             steps {
-                sh 'apt update'
-                sh 'apt install -y ssh jq'
                 sh 'cat /root/tfstate/script-openstack-servers.tfstate.backup | jq \'.["outputs"]["ids"]["value"][0]\''
                 // sh 'doctl compute droplet-action rebuild 226306913 -t ${DIGITALOCEAN_TOKEN} --image ubuntu-20-04-x64 --wait'
                 echo 'Finished'
