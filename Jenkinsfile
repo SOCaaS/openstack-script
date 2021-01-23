@@ -13,8 +13,8 @@ pipeline {
                 sh 'terraform --version'
                 dir("deployment") {
                     sh 'terraform init'
-                    sh 'terraform plan  -var-file=/root/tfvars/digitalocean.tfvars'
-                    sh 'terraform apply -var-file=/root/tfvars/digitalocean.tfvars --auto-approve'
+                    sh 'terraform plan  -var-file=/root/tfvars/do-contabo.tfvars'
+                    sh 'terraform apply -var-file=/root/tfvars/do-contabo.tfvars --auto-approve'
                 }
                 echo 'Finished'
             }
@@ -26,6 +26,8 @@ pipeline {
                 }
             }
             steps {
+                sh 'apt update'
+                sh 'apt install -y ssh'
                 // sh 'doctl compute droplet-action rebuild 226306913 -t ${DIGITALOCEAN_TOKEN} --image ubuntu-20-04-x64 --wait'
                 echo 'Finished'
             }
@@ -33,10 +35,10 @@ pipeline {
     }
     post {
         success {
-            discordSend description: "Openstack CI/CD SUCCESS", footer: "openstack-script-cicd", link: env.BUILD_URL, result: currentBuild.currentResult, title: JOB_NAME, webhookURL: env.SOCAAS_WEBHOOK
+            discordSend description: "Openstack CI/CD SUCCESS", footer: "openstack-script-cicd", link: env.BUILD_URL, result: currentBuild.currentResult, title: JOB_NAME, webhookURL: env.DISCORD_WEBHOOK
         }
         failure {
-            discordSend description: "Openstack CI/CD Failed", footer: "openstack-script-cicd", link: env.BUILD_URL, result: currentBuild.currentResult, title: JOB_NAME, webhookURL: env.SOCAAS_WEBHOOK
+            discordSend description: "Openstack CI/CD Failed", footer: "openstack-script-cicd", link: env.BUILD_URL, result: currentBuild.currentResult, title: JOB_NAME, webhookURL: env.DISCORD_WEBHOOK
         }
     }  
 }

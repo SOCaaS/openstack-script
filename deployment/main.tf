@@ -1,6 +1,6 @@
 terraform {
   backend "local" {
-    path = "/root/tfstate/script-openstack-servers.tfstate"
+    path = "/root/tfstate/script-openstack-do.tfstate"
   }
 }
 
