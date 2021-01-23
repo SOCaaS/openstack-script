@@ -34,9 +34,9 @@ pipeline {
                     then 
                         echo "This is clear!"; 
                     else
-                        doctl compute droplet-action rebuild $(cat /root/tfstate/script-openstack-do.tfstate | jq \'.["outputs"]["ids"]["value"][0]\' | sed "s|\"||g") -t ${DIGITALOCEAN_TOKEN} --image ubuntu-20-04-x64 --wait
-                        scp -o StrictHostKeyChecking=no -r ./ root@$(cat /root/tfstate/script-openstack-do.tfstate | jq \'.["outputs"]["ips"]["value"][0]\' | sed "s|\"||g"):/root/script-openstack/
-                        ssh -o StrictHostKeyChecking=no root@$(cat /root/tfstate/script-openstack-do.tfstate | jq \'.["outputs"]["ips"]["value"][0]\' | sed "s|\"||g") "cd /root/script-openstack/; ./start.sh"
+                        doctl compute droplet-action rebuild $(cat /root/tfstate/script-openstack-do.tfstate | jq \'.["outputs"]["ids"]["value"][0]\' | sed \'s|"||g\' ) -t ${DIGITALOCEAN_TOKEN} --image ubuntu-20-04-x64 --wait
+                        scp -o StrictHostKeyChecking=no -r ./ root@$(cat /root/tfstate/script-openstack-do.tfstate | jq \'.["outputs"]["ips"]["value"][0]\' | sed \'s|"||g\' ):/root/script-openstack/
+                        ssh -o StrictHostKeyChecking=no root@$(cat /root/tfstate/script-openstack-do.tfstate | jq \'.["outputs"]["ips"]["value"][0]\' | sed \'s|"||g\' ) "cd /root/script-openstack/; ./start.sh"
                     fi 
                 '''
                 echo 'Finished'
