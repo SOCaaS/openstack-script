@@ -2,6 +2,9 @@ set -e
 apt update
 apt upgrade -y
 
+sed -i -e "s|{{ KEYSTONE_DB_USER }}|$(grep KEYSTONE_DB_USER ../.env | cut -d '=' -f2)|g"  ./keystone.sql
+sed -i -e "s|{{ KEYSTONE_DB_PASSWORD }}|$(grep KEYSTONE_DB_PASSWORD ../.env | cut -d '=' -f2)|g"  ./keystone.sql
+
 # run keystone.sql
 mysql -e "source keystone.sql";
 
@@ -11,9 +14,9 @@ apt install -y keystone
 
 # edit keystone.conf
 echo "editing keystone.conf"
-sed -i -e "s|^connection = .*|connection = mysql+pymysql://keystone:NCQhEHRb@controller/keystone|g" /etc/keystone/keystone.conf
+crudini --set /etc/keystone/keystone.conf database connection mysql+pymysql://$(grep KEYSTONE_DB_USER ../.env | cut -d '=' -f2):$(grep KEYSTONE_DB_PASSWORD ../.env | cut -d '=' -f2)@$(grep DEFAULT_URL ../.env | cut -d '=' -f2)/$(grep KEYSTONE_DB_NAME ../.env | cut -d '=' -f2)
 
-sed -i -e '/^\[token\]/a\' -e 'provider = fernet' /etc/keystone/keystone.conf
+crudini --set /etc/keystone/keystone.conf token provider fernet
 
 # Populate the Identity service database
 echo "populating the identity service database"
@@ -28,50 +31,17 @@ keystone-manage credential_setup --keystone-user keystone --keystone-group keyst
 
 # Bootstrap the Identity service
 echo "bootstrap identity services"
-keystone-manage bootstrap --bootstrap-password 9zExzZzL \
-  --bootstrap-admin-url http://controller:5000/v3/ \
-  --bootstrap-internal-url http://controller:5000/v3/ \
-  --bootstrap-public-url http://controller:5000/v3/ \
+keystone-manage bootstrap --bootstrap-password $(grep KEYSTONE_ADMIN_PASSWORD ../.env | cut -d '=' -f2) \
+  --bootstrap-admin-url http://$(grep DEFAULT_URL ../.env | cut -d '=' -f2):5000/v3/ \
+  --bootstrap-internal-url http://$(grep DEFAULT_URL ../.env | cut -d '=' -f2):5000/v3/ \
+  --bootstrap-public-url http://$(grep DEFAULT_URL ../.env | cut -d '=' -f2):5000/v3/ \
   --bootstrap-region-id RegionOne
 
 
 # set servername to controller
 echo "Servername set to controller"
-sed -i -e "s|^ServerName .*|ServerName controller|g" /etc/apache2/apache2.conf
-
+sed -i "1 i\ServerName $(grep DEFAULT_URL ../.env | cut -d '=' -f2)" /etc/apache2/apache2.conf
 
 # restart apache server
 echo "Restarting apache2"
 service apache2 restart
-
-
-# set env variables	
-echo "setting env variables"
-export OS_USERNAME=admin
-export OS_PASSWORD=9zExzZzL
-export OS_PROJECT_NAME=admin
-export OS_USER_DOMAIN_NAME=Default
-export OS_PROJECT_DOMAIN_NAME=Default
-export OS_AUTH_URL=http://controller:5000/v3
-export OS_IDENTITY_API_VERSION=3
-
-# install openstack train
-#
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
