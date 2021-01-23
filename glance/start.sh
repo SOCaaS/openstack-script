@@ -16,25 +16,25 @@ export OS_AUTH_URL=http://controller:5000/v3
 export OS_IDENTITY_API_VERSION=3
 
 echo -e "\nCreate openstack user on keystone"
-openstack user create --domain default --password "yrgehdbsjkhu32897124" glance
+openstack user create --domain $(grep OS_PROJECT_DOMAIN_NAME ../.env | cut -d '=' -f2) --password "$(grep GLANCE_PASSWORD ../.env | cut -d '=' -f2)" $(grep GLANCE_USER ../.env | cut -d '=' -f2)
 
 echo -e "\nCreate a project"
-openstack project create --domain default --description "Service Project" service
-openstack role add --project service --user glance admin
+openstack project create --domain $(grep OS_PROJECT_DOMAIN_NAME ../.env | cut -d '=' -f2) --description "Service Project" service
+openstack role add --project service --user $(grep GLANCE_USER ../.env | cut -d '=' -f2) admin
 
 echo -e "\nCreate the glance service entity"
-openstack service create --name glance --description "OpenStack Image" image
+openstack service create --name $(grep GLANCE_USER ../.env | cut -d '=' -f2) --description "OpenStack Image" image
 
 echo -e "\nCreate the Image service API endpoint"
-openstack endpoint create --region RegionOne image public http://controller:9292
-openstack endpoint create --region RegionOne image internal http://controller:9292
-openstack endpoint create --region RegionOne image admin http://controller:9292
+openstack endpoint create --region RegionOne image public http://$(grep DEFAULT_URL ../.env | cut -d '=' -f2):9292
+openstack endpoint create --region RegionOne image internal http://$(grep DEFAULT_URL ../.env | cut -d '=' -f2):9292
+openstack endpoint create --region RegionOne image admin http://$(grep DEFAULT_URL ../.env | cut -d '=' -f2):9292
 
 echo -e "\nInstall and configure components"
 apt install -y glance
 
 echo -e "\nEditing glance-api.conf"
-sed -i -e "s|^connection = .*|connection = mysql+pymysql://glance:837ruyDA312y23djs@controller/glance|g" /etc/glance/glance-api.conf
+crudini --set /etc/glance/glance-api.conf database connection mysql+pymysql://$(grep GLANCE_DB_USER ../.env | cut -d '=' -f2):$(grep GLANCE_DB_PASSWORD ../.env | cut -d '=' -f2)@$(grep DEFAULT_URL ../.env | cut -d '=' -f2)/$(grep GLANCE_DB_NAME ../.env | cut -d '=' -f2)
 
 sed -i -e '/^\[keystone_authtoken\]/a\' -e "auth_url = http://controller:5000" /etc/glance/glance-api.conf
 sed -i -e '/^\[keystone_authtoken\]/a\' -e "memcached_servers = controller:11211" /etc/glance/glance-api.conf

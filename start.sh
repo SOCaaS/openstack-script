@@ -9,10 +9,10 @@ cd ./keystone
 ./start.sh
 cd ..
 
-# echo -e "\nStart Glance!"
-# cd ./glance
-# ./start.sh
-# cd ..
+echo -e "\nStart Glance!"
+cd ./glance
+./start.sh
+cd ..
 
 # echo -e "\nStart Placement!"
 # cd ./placement
