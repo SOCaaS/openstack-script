@@ -29,6 +29,7 @@ pipeline {
                 }
             }
             steps {
+                sh 'ls -lah /root/.ssh'
                 sh '''#!/bin/bash
                     if [ $(cat /root/tfstate/script-openstack-do.tfstate | jq \'.["outputs"]["ids"]["value"][0]\') == null ] 
                     then 
