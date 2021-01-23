@@ -14,7 +14,7 @@ apt install -y mysql-server
 service mysql status
 
 echo -e "Install memcache server"
-apt install -y memcached
+apt install -y memcached python-memcache
 
 echo -e "\nEcho to /etc/hosts add DEFAULT_URL"
 
