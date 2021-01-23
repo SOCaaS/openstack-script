@@ -9,29 +9,29 @@ cd ./keystone
 ./start.sh
 cd ..
 
-echo -e "\nStart Glance!"
-cd ./glance
-./start.sh
-cd ..
+# echo -e "\nStart Glance!"
+# cd ./glance
+# ./start.sh
+# cd ..
 
-echo -e "\nStart Placement!"
-cd ./placement
-./start.sh
-cd ..
+# echo -e "\nStart Placement!"
+# cd ./placement
+# ./start.sh
+# cd ..
 
-echo -e "\nStart Nova!"
-cd ./nova
-./start.sh
-cd ..
+# echo -e "\nStart Nova!"
+# cd ./nova
+# ./start.sh
+# cd ..
 
-echo -e "\nStart Neutron!"
-cd ./neutron
-./start.sh
-cd ..
+# echo -e "\nStart Neutron!"
+# cd ./neutron
+# ./start.sh
+# cd ..
 
-echo -e "\nStart Horizon!"
-cd ./horizon
-./start.sh
-cd ..
+# echo -e "\nStart Horizon!"
+# cd ./horizon
+# ./start.sh
+# cd ..
 
 echo -e "Finish, all service has been deployed!"
