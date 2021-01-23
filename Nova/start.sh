@@ -53,7 +53,7 @@ sed -i -e '/^\[keystone_authtoken\]/a\' -e 'project_name = service' /etc/nova/no
 sed -i -e '/^\[keystone_authtoken\]/a\' -e 'username = nova' /etc/nova/nova.conf
 sed -i -e '/^\[keystone_authtoken\]/a\' -e 'password = v3hx4vBB' /etc/nova/nova.conf
 #change ip
-sed -i -e '/^\[DEFAULT\]/a\' -e 'my_ip = 10.0.0.11' /etc/nova/nova.conf
+sed -i -e '/^\[DEFAULT\]/a\' -e 'my_ip = 127.0.0.1' /etc/nova/nova.conf
 #vnc
 sed -i -e '/^\[vnc\]/a\' -e 'enabled = true' /etc/nova/nova.conf
 sed -i -e '/^\[vnc\]/a\' -e 'server_listen = $my_ip' /etc/nova/nova.conf
