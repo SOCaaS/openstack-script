@@ -30,14 +30,14 @@ pipeline {
             }
             steps {
                 sh '''#!/bin/bash
-                    IDS = ${cat /root/tfstate//root/tfstate/script-openstack-do.tfstate | jq \'.["outputs"]["ids"]["value"][0]\'}
+                    IDS = ${cat /root/tfstate/script-openstack-do.tfstate | jq \'.["outputs"]["ids"]["value"][0]\'}
                     if [ $IDS != "" ] then
                         echo $IDS
                     else
                         echo "WTF!"
                     fi
                 '''
-                sh 'cat /root/tfstate//root/tfstate/script-openstack-do.tfstate | jq \'.["outputs"]["ids"]["value"][0]\''
+                sh 'cat /root/tfstate/script-openstack-do.tfstate | jq \'.["outputs"]["ids"]["value"][0]\''
                 // sh 'doctl compute droplet-action rebuild 226306913 -t ${DIGITALOCEAN_TOKEN} --image ubuntu-20-04-x64 --wait'
                 echo 'Finished'
             }
