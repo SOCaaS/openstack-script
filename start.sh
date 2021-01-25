@@ -1,4 +1,10 @@
 echo -e "Start All Service at Once!"
+
+echo -e "\nStart Integration Stack!"
+cd ./integration
+./start.sh
+cd ..
+
 echo -e "\nStart base Openstack!"
 cd ./openstack-base
 ./start.sh
