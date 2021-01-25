@@ -55,20 +55,20 @@ crudini --set /etc/glance/glance-api.conf glance_store stores "file,http"
 crudini --set /etc/glance/glance-api.conf glance_store default_store file 
 crudini --set /etc/glance/glance-api.conf glance_store filesystem_store_datadir /var/lib/glance/images/ 
 
-echo -e "\nEditing glance-registry.conf"
+# echo -e "\nEditing glance-registry.conf"
 
-crudini --set /etc/glance/glance-registry.conf database connection mysql+pymysql://$(grep GLANCE_DB_USER ../.env | cut -d '=' -f2):$(grep GLANCE_DB_PASSWORD ../.env | cut -d '=' -f2)@$(grep DEFAULT_URL ../.env | cut -d '=' -f2)/$(grep GLANCE_DB_NAME ../.env | cut -d '=' -f2)
+# crudini --set /etc/glance/glance-registry.conf database connection mysql+pymysql://$(grep GLANCE_DB_USER ../.env | cut -d '=' -f2):$(grep GLANCE_DB_PASSWORD ../.env | cut -d '=' -f2)@$(grep DEFAULT_URL ../.env | cut -d '=' -f2)/$(grep GLANCE_DB_NAME ../.env | cut -d '=' -f2)
 
-crudini --set /etc/glance/glance-registry.conf keystone_authtoken auth_url http://$(grep DEFAULT_URL ../.env | cut -d '=' -f2):5000 
-crudini --set /etc/glance/glance-registry.conf keystone_authtoken memcached_servers $(grep DEFAULT_URL ../.env | cut -d '=' -f2):11211 
-crudini --set /etc/glance/glance-registry.conf keystone_authtoken auth_type password 
-crudini --set /etc/glance/glance-registry.conf keystone_authtoken project_domain_name $OS_PROJECT_DOMAIN_NAME 
-crudini --set /etc/glance/glance-registry.conf keystone_authtoken user_domain_name $OS_USER_DOMAIN_NAME
-crudini --set /etc/glance/glance-registry.conf keystone_authtoken project_name service
-crudini --set /etc/glance/glance-registry.conf keystone_authtoken username $(grep GLANCE_USER ../.env | cut -d '=' -f2)
-crudini --set /etc/glance/glance-registry.conf keystone_authtoken password $(grep GLANCE_PASSWORD ../.env | cut -d '=' -f2)
+# crudini --set /etc/glance/glance-registry.conf keystone_authtoken auth_url http://$(grep DEFAULT_URL ../.env | cut -d '=' -f2):5000 
+# crudini --set /etc/glance/glance-registry.conf keystone_authtoken memcached_servers $(grep DEFAULT_URL ../.env | cut -d '=' -f2):11211 
+# crudini --set /etc/glance/glance-registry.conf keystone_authtoken auth_type password 
+# crudini --set /etc/glance/glance-registry.conf keystone_authtoken project_domain_name $OS_PROJECT_DOMAIN_NAME 
+# crudini --set /etc/glance/glance-registry.conf keystone_authtoken user_domain_name $OS_USER_DOMAIN_NAME
+# crudini --set /etc/glance/glance-registry.conf keystone_authtoken project_name service
+# crudini --set /etc/glance/glance-registry.conf keystone_authtoken username $(grep GLANCE_USER ../.env | cut -d '=' -f2)
+# crudini --set /etc/glance/glance-registry.conf keystone_authtoken password $(grep GLANCE_PASSWORD ../.env | cut -d '=' -f2)
 
-crudini --set /etc/glance/glance-registry.conf paste_deploy flavor keystone 
+# crudini --set /etc/glance/glance-registry.conf paste_deploy flavor keystone 
 
 echo -e "\nDB Sync Glance"
 set +e
