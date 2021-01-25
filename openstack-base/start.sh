@@ -1,6 +1,6 @@
 set -e
 apt update
-
+apt-get -o Dpkg::Options::='--force-confold' --force-yes -fuy dist-upgrade
 
 echo -e "Install Net-Tools"
 apt install -y net-tools

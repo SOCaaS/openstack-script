@@ -2,7 +2,6 @@ set -e
 
 echo -e "\nInit"
 apt update
-apt-get -o Dpkg::Options::='--force-confold' --force-yes -fuy dist-upgrade
 
 apt install -y python3-pip
 
