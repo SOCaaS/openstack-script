@@ -125,9 +125,6 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 OPENSTACK_HOST = "controller"
 OPENSTACK_KEYSTONE_URL = "http://%s:5000/v3" % OPENSTACK_HOST
-OPENSTACK_KEYSTONE_MULTIDOMAIN_SUPPORT = True
-OPENSTACK_KEYSTONE_DEFAULT_DOMAIN = "Default"
-OPENSTACK_KEYSTONE_DEFAULT_ROLE = "user"
 OPENSTACK_API_VERSIONS = {
     "identity": 3,
     "image": 2,
