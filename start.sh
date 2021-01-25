@@ -19,10 +19,10 @@ cd ./images
 ./start.sh
 cd ..
 
-# echo -e "\nStart Placement!"
-# cd ./placement
-# ./start.sh
-# cd ..
+echo -e "\nStart Placement!"
+cd ./placement
+./start.sh
+cd ..
 
 # echo -e "\nStart Nova!"
 # cd ./nova
