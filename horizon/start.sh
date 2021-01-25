@@ -1,6 +1,6 @@
 set -e
 apt update
-apt upgrade -y
+
 
 
 # Install horizon

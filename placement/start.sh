@@ -1,6 +1,6 @@
 set -e
 apt update
-apt upgrade -y
+
 
 # run placement.sql
 echo -e "\n Create a placement sql user"

@@ -1,6 +1,6 @@
 set -e
 apt update
-apt upgrade -y
+
 
 echo -e "\n Create a nova sql user"
 sed -i -e "s|{{ NOVA_API_DB_NAME }}|$(grep NOVA_API_DB_NAME ../.env | cut -d '=' -f2)|g" ./nova.sql

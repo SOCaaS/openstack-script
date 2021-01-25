@@ -1,6 +1,6 @@
 set -e
 apt update
-apt upgrade -y
+
 
 echo -e "\n Create a CINDER sql user"
 sed -i -e "s|{{ CINDER_DB_NAME }}|$(grep CINDER_DB_NAME ../.env | cut -d '=' -f2)|g" ./cinder.sql

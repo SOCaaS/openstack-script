@@ -2,7 +2,7 @@ set -e
 
 echo -e "\nInit"
 apt update
-apt upgrade -y
+
 apt install -y python3-pip
 
 echo -e "\nInstall Tailon"

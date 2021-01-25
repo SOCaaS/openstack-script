@@ -1,6 +1,6 @@
 set -e
 apt update
-apt upgrade -y
+
 
 echo -e "\n Create a neutron sql user"
 sed -i -e "s|{{ NEUTRON_DB_NAME }}|$(grep NEUTRON_DB_NAME ../.env | cut -d '=' -f2)|g" ./neutron.sql

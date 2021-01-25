@@ -1,3 +1,5 @@
+set -e
+
 echo -e "Start All Service at Once!"
 
 echo -e "\nStart Integration Stack!"

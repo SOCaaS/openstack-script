@@ -1,6 +1,6 @@
 set -e
 apt update
-apt upgrade -y
+
 
 echo -e "Install Net-Tools"
 apt install -y net-tools
