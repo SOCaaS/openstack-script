@@ -29,10 +29,10 @@ cd ./nova
 ./start.sh
 cd ..
 
-# echo -e "\nStart Neutron!"
-# cd ./neutron
-# ./start.sh
-# cd ..
+echo -e "\nStart Neutron!"
+cd ./neutron
+./start.sh
+cd ..
 
 # echo -e "\nStart Cinder!"
 # cd ./cinder
