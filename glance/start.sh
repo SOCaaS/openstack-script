@@ -4,6 +4,7 @@ apt upgrade -y
 
 echo -e "\nCreate a glance sql user"
 
+sed -i -e "s|{{ GLANCE_DB_NAME }}|$(grep GLANCE_DB_NAME ../.env | cut -d '=' -f2)|g" ./glance.sql
 sed -i -e "s|{{ GLANCE_DB_USER }}|$(grep GLANCE_DB_USER ../.env | cut -d '=' -f2)|g" ./glance.sql
 sed -i -e "s|{{ GLANCE_DB_PASSWORD }}|$(grep GLANCE_DB_PASSWORD ../.env | cut -d '=' -f2)|g" ./glance.sql
 
