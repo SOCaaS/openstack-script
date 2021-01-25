@@ -1,11 +1,4 @@
-set -e
-
 echo -e "Start All Service at Once!"
-
-echo -e "\nStart Integration Stack!"
-cd ./integration
-./start.sh
-cd ..
 
 echo -e "\nStart base Openstack!"
 cd ./openstack-base
@@ -49,6 +42,11 @@ cd ..
 
 echo -e "\nStart Horizon!"
 cd ./horizon
+./start.sh
+cd ..
+
+echo -e "\nStart Integration Stack!"
+cd ./integration
 ./start.sh
 cd ..
 
