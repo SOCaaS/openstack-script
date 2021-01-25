@@ -36,7 +36,7 @@ pipeline {
                         echo "This is clear!"; 
                     else
                         doctl compute droplet-action rebuild $(cat /root/tfstate/script-openstack-do.tfstate | jq \'.["outputs"]["ids"]["value"][0]\' | sed \'s|"||g\' ) -t ${DIGITALOCEAN_TOKEN} --image ubuntu-20-04-x64 --wait
-                        ping -c 5 $(cat /root/tfstate/script-openstack-do.tfstate | jq \'.["outputs"]["ips"]["value"][0]\' | sed \'s|"||g\' )
+                        ping -c 10 $(cat /root/tfstate/script-openstack-do.tfstate | jq \'.["outputs"]["ips"]["value"][0]\' | sed \'s|"||g\' )
                         echo "Ping Finished!"
 
                         scp -o StrictHostKeyChecking=no -i /root/.ssh/id_rsa -r $PWD root@$(cat /root/tfstate/script-openstack-do.tfstate | jq \'.["outputs"]["ips"]["value"][0]\' | sed \'s|"||g\' ):/root/script-openstack/
