@@ -2,6 +2,7 @@ set -e
 apt update
 apt upgrade -y
 
+sed -i -e "s|{{ KEYSTONE_DB_NAME }}|$(grep KEYSTONE_DB_NAME ../.env | cut -d '=' -f2)|g"  ./keystone.sql
 sed -i -e "s|{{ KEYSTONE_DB_USER }}|$(grep KEYSTONE_DB_USER ../.env | cut -d '=' -f2)|g"  ./keystone.sql
 sed -i -e "s|{{ KEYSTONE_DB_PASSWORD }}|$(grep KEYSTONE_DB_PASSWORD ../.env | cut -d '=' -f2)|g"  ./keystone.sql
 
