@@ -93,6 +93,8 @@ su -s /bin/sh -c "nova-manage db sync" nova
 su -s /bin/sh -c "nova-manage cell_v2 list_cells" nova
 
 echo "finalize installation"
+set -x
+set -v
 
 service nova-api restart
 service nova-scheduler restart
@@ -106,4 +108,7 @@ service nova-compute restart
 openstack compute service list --service nova-compute
 su -s /bin/sh -c "nova-manage cell_v2 discover_hosts --verbose" nova
 
-crudini --set /etc/nova/nova-compute.conf scheduler discover_hosts_in_cells_interval 300' /etc/nova/nova-compute.conf
+crudini --set /etc/nova/nova-compute.conf scheduler discover_hosts_in_cells_interval 300
+
+set +x
+set +v
