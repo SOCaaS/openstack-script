@@ -52,7 +52,7 @@ crudini --set /etc/nova/nova.conf api auth_strategy keystone
 crudini --set /etc/nova/nova.conf keystone_authtoken www_authenticate_uri http://$(grep DEFAULT_URL ../.env | cut -d '=' -f2):5000/ 
 crudini --set /etc/nova/nova.conf keystone_authtoken auth_url http://$(grep DEFAULT_URL ../.env | cut -d '=' -f2):5000/ 
 crudini --set /etc/nova/nova.conf keystone_authtoken memcached_servers $(grep DEFAULT_URL ../.env | cut -d '=' -f2):11211 
-crudini --set /etc/nova/nova.conf keystone_authtoken auth_type=password 
+crudini --set /etc/nova/nova.conf keystone_authtoken auth_type password 
 crudini --set /etc/nova/nova.conf keystone_authtoken project_domain_name $OS_PROJECT_DOMAIN_NAME 
 crudini --set /etc/nova/nova.conf keystone_authtoken user_domain_name $OS_USER_DOMAIN_NAME
 crudini --set /etc/nova/nova.conf keystone_authtoken project_name service 
