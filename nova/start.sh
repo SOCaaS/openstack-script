@@ -107,9 +107,6 @@ su -s /bin/sh -c "nova-manage cell_v2 discover_hosts --verbose" nova
 
 crudini --set /etc/nova/nova-compute.conf scheduler discover_hosts_in_cells_interval 300
 
-set -x
-set -v
-
 echo -e "\nCheck Nova Installation"
 openstack compute service list
 openstack catalog list
