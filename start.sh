@@ -14,6 +14,11 @@ cd ./glance
 ./start.sh
 cd ..
 
+echo -e "\nAdd Image!"
+cd ./images
+./start.sh
+cd ..
+
 # echo -e "\nStart Placement!"
 # cd ./placement
 # ./start.sh
