@@ -19,6 +19,7 @@ pipeline {
                         terraform init
                         terraform plan  -var-file=/root/tfvars/do-contabo.tfvars
                         terraform apply -var-file=/root/tfvars/do-contabo.tfvars --auto-approve
+                        terraform show
                     '''
                 }
                 echo 'Finished'
