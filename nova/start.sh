@@ -57,7 +57,7 @@ crudini --set /etc/nova/nova.conf keystone_authtoken project_domain_name $OS_PRO
 crudini --set /etc/nova/nova.conf keystone_authtoken user_domain_name $OS_USER_DOMAIN_NAME
 crudini --set /etc/nova/nova.conf keystone_authtoken project_name service 
 crudini --set /etc/nova/nova.conf keystone_authtoken username $(grep NOVA_USER ../.env | cut -d '=' -f2) 
-crudini --set /etc/nova/nova.conf keystone_authtoken password $(grep NOVA_USER ../.env | cut -d '=' -f2)
+crudini --set /etc/nova/nova.conf keystone_authtoken password $(grep NOVA_PASSWORD ../.env | cut -d '=' -f2)
 #change ip
 crudini --set /etc/nova/nova.conf DEFAULT my_ip $(grep HOST_IP ../.env | cut -d '=' -f2)
 #vnc
