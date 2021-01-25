@@ -39,7 +39,7 @@ apt install -y neutron-server neutron-plugin-ml2 neutron-linuxbridge-agent neutr
 echo -e "\neditting neutron.conf"
 crudini --set /etc/neutron/neutron.conf database connection mysql+pymysql://$(grep NEUTRON_DB_USER ../.env | cut -d '=' -f2):$(grep NEUTRON_DB_PASSWORD ../.env | cut -d '=' -f2)@$(grep DEFAULT_URL ../.env | cut -d '=' -f2)/$(grep NEUTRON_DB_NAME ../.env | cut -d '=' -f2)
 
-crudini --set /etc/neutron/neutron.conf DEFAULT core_plugin m12
+crudini --set /etc/neutron/neutron.conf DEFAULT core_plugin neutron.plugins.ml2.plugin.Ml2Plugin
 crudini --set /etc/neutron/neutron.conf DEFAULT service_plugins router
 crudini --set /etc/neutron/neutron.conf DEFAULT transport_url rabbit://$(grep rabbitMQ_USER ../.env | cut -d '=' -f2):$(grep rabbitMQ_PASSWORD ../.env | cut -d '=' -f2)@$(grep DEFAULT_URL ../.env | cut -d '=' -f2):5672
 crudini --set /etc/neutron/neutron.conf DEFAULT allow_overlapping_ips true
