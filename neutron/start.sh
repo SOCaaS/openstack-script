@@ -70,16 +70,18 @@ crudini --set /etc/neutron/neutron.conf nova password $(grep NOVA_PASSWORD ../.e
 crudini --set /etc/neutron/neutron.conf oslo_concurrency lock_path /var/lib/neutron/tmp
 
 echo -e "\nml2_conf.ini"
-crudini --set /etc/neutron/plugins/ml2/ml2_conf.ini ml2 type_drivers flat,vlan
-crudini --set /etc/neutron/plugins/ml2/ml2_conf.ini ml2 tenant_network_types
+crudini --set /etc/neutron/plugins/ml2/ml2_conf.ini ml2 type_drivers flat,vlan,vxlan
+crudini --set /etc/neutron/plugins/ml2/ml2_conf.ini ml2 tenant_network_types vxlan
 crudini --set /etc/neutron/plugins/ml2/ml2_conf.ini ml2 mechanism_drivers linuxbridge
 crudini --set /etc/neutron/plugins/ml2/ml2_conf.ini ml2 extension_drivers port_security
 crudini --set /etc/neutron/plugins/ml2/ml2_conf.ini ml2_type_flat flat_networks provider
+crudini --set /etc/neutron/plugins/ml2/ml2_conf.ini ml2_type_vxlan vni_ranges 1:1000
 crudini --set /etc/neutron/plugins/ml2/ml2_conf.ini securitygroup enable_ipset true
 
 echo -e "\nlinuxbridge_agent.ini"
 crudini --set /etc/neutron/plugins/ml2/linuxbridge_agent.ini linux_bridge physical_interface_mappings provider:eth0
-crudini --set /etc/neutron/plugins/ml2/linuxbridge_agent.ini vxlan enable_vxlan false
+crudini --set /etc/neutron/plugins/ml2/linuxbridge_agent.ini vxlan enable_vxlan true
+crudini --set /etc/neutron/plugins/ml2/linuxbridge_agent.ini vxlan local_ip $(grep HOST_IP ../.env | cut -d '=' -f2)
 crudini --set /etc/neutron/plugins/ml2/linuxbridge_agent.ini securitygroup enable_security_group true
 crudini --set /etc/neutron/plugins/ml2/linuxbridge_agent.ini securitygroup firewall_driver neutron.agent.linux.iptables_firewall.IptablesFirewallDriver
 
@@ -96,6 +98,7 @@ crudini --set /etc/neutron/metadata_agent.ini DEFAULT nova_metadata_host $(grep 
 crudini --set /etc/neutron/metadata_agent.ini DEFAULT metadata_proxy_shared_secret $(grep METADATA_PROXY_SHARED_SECRET ../.env | cut -d '=' -f2)
 
 echo -e "\nediting nova.conf"
+crudini --set /etc/nova/nova.conf neutron url http://$(grep DEFAULT_URL ../.env | cut -d '=' -f2):9696
 crudini --set /etc/nova/nova.conf neutron auth_url http://$(grep DEFAULT_URL ../.env | cut -d '=' -f2):5000
 crudini --set /etc/nova/nova.conf neutron auth_type password
 crudini --set /etc/nova/nova.conf neutron project_domain_name $OS_PROJECT_DOMAIN_NAME 
