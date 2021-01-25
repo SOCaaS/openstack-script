@@ -34,7 +34,7 @@ openstack endpoint create --region RegionOne volumev3 public http://$(grep DEFAU
 openstack endpoint create --region RegionOne volumev3 internal http://$(grep DEFAULT_URL ../.env | cut -d '=' -f2):8776/v3/%\(project_id\)s
 openstack endpoint create --region RegionOne volumev3 admin http://$(grep DEFAULT_URL ../.env | cut -d '=' -f2):8776/v3/%\(project_id\)s
 
-echo -e "\n Install cinder"
+echo -e "\nInstall cinder"
 apt install -y cinder-api cinder-scheduler
 
 echo -e "\nConfigure Database and Rabbitmq Access"
@@ -43,8 +43,8 @@ crudini --set /etc/cinder/cinder.conf DEFAULT transport_url rabbit://$(grep rabb
 
 echo -e "\nConfigure keystone"
 crudini --set /etc/cinder/cinder.conf DEFAULT auth_strategy keystone
-crudini --set /etc/cinder/cinder.conf keystone_authtoken auth_uri http://$(grep DEFAULT_URL ../.env | cut -d '=' -f2):5000
-crudini --set /etc/cinder/cinder.conf keystone_authtoken auth_url http://$(grep DEFAULT_URL ../.env | cut -d '=' -f2):35357
+crudini --set /etc/cinder/cinder.conf keystone_authtoken www_authenticate_uri http://$(grep DEFAULT_URL ../.env | cut -d '=' -f2):5000
+crudini --set /etc/cinder/cinder.conf keystone_authtoken auth_url http://$(grep DEFAULT_URL ../.env | cut -d '=' -f2):5000
 crudini --set /etc/cinder/cinder.conf keystone_authtoken memcached_servers $(grep DEFAULT_URL ../.env | cut -d '=' -f2):11211
 crudini --set /etc/cinder/cinder.conf keystone_authtoken auth_type password
 crudini --set /etc/cinder/cinder.conf keystone_authtoken project_domain_name $OS_PROJECT_DOMAIN_NAME 
