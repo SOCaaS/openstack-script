@@ -2,80 +2,87 @@ set -e
 apt update
 apt upgrade -y
 
-echo "run nova.sql"
+echo -e "\n Create a nova sql user"
+sed -i -e "s|{{ NOVA_API_DB_NAME }}|$(grep NOVA_API_DB_NAME ../.env | cut -d '=' -f2)|g" ./placement.sql
+sed -i -e "s|{{ NOVA_CELL0_DB_NAME }}|$(grep NOVA_CELL0_DB_NAME ../.env | cut -d '=' -f2)|g" ./placement.sql
+sed -i -e "s|{{ NOVA_DB_NAME }}|$(grep NOVA_DB_NAME ../.env | cut -d '=' -f2)|g" ./placement.sql
+sed -i -e "s|{{ NOVA_DB_USER }}|$(grep NOVA_DB_USER ../.env | cut -d '=' -f2)|g" ./placement.sql
+sed -i -e "s|{{ NOVA_DB_PASSWORD }}|$(grep NOVA_DB_PASSWORD ../.env | cut -d '=' -f2)|g" ./placement.sql
+
 mysql -e "source nova.sql";
 
-echo "export variables"
-export OS_USERNAME=admin
-export OS_PASSWORD=9zExzZzL
-export OS_PROJECT_NAME=admin
-export OS_USER_DOMAIN_NAME=Default
-export OS_PROJECT_DOMAIN_NAME=Default
-export OS_AUTH_URL=http://controller:5000/v3
-export OS_IDENTITY_API_VERSION=3
+
+# export variables
+echo -e "\nExport environment variable"
+export OS_USERNAME=$(grep OS_USERNAME ../.env | cut -d '=' -f2)
+export OS_PASSWORD=$(grep OS_PASSWORD ../.env | cut -d '=' -f2)
+export OS_PROJECT_NAME=$(grep OS_PROJECT_NAME ../.env | cut -d '=' -f2)
+export OS_USER_DOMAIN_NAME=$(grep OS_USER_DOMAIN_NAME ../.env | cut -d '=' -f2)
+export OS_PROJECT_DOMAIN_NAME=$(grep OS_PROJECT_DOMAIN_NAME ../.env | cut -d '=' -f2)
+export OS_AUTH_URL=$(grep OS_AUTH_URL ../.env | cut -d '=' -f2)
+export OS_IDENTITY_API_VERSION=$(grep OS_IDENTITY_API_VERSION ../.env | cut -d '=' -f2)
 
 echo "creating openstack user 'nova'"
-openstack user create --domain default --password v3hx4vBB nova
-openstack role add --project service --user nova admin
+openstack user create --domain $OS_PROJECT_DOMAIN_NAME --password "$(grep NOVA_PASSWORD ../.env | cut -d '=' -f2)" $(grep NOVA_USER ../.env | cut -d '=' -f2)
+openstack role add --project service --user $(grep NOVA_USER ../.env | cut -d '=' -f2) admin
 
-openstack service create --name nova --description "OpenStack Compute" compute
+openstack service create --name $(grep NOVA_USER ../.env | cut -d '=' -f2) --description "OpenStack Compute" compute
 
-openstack endpoint create --region RegionOne compute public http://controller:8774/v2.1
-openstack endpoint create --region RegionOne compute internal http://controller:8774/v2.1
-openstack endpoint create --region RegionOne compute admin http://controller:8774/v2.1
+openstack endpoint create --region RegionOne compute public http://$(grep DEFAULT_URL ../.env | cut -d '=' -f2):8774/v2.1
+openstack endpoint create --region RegionOne compute internal http://$(grep DEFAULT_URL ../.env | cut -d '=' -f2):8774/v2.1
+openstack endpoint create --region RegionOne compute admin http://$(grep DEFAULT_URL ../.env | cut -d '=' -f2):8774/v2.1
 
 echo "install nova API"
 apt install -y nova-api nova-conductor nova-novncproxy nova-scheduler
 apt install -y nova-compute
 
 echo "editting nova.conf"
-#commenting connection
-sed -i -e "s|^connection = .*|#connection = .*|g" /etc/nova/nova.conf
 
 #change api_db and db credential
-sed -i -e '/^\[api_database\]/a\' -e 'connection = mysql+pymysql://nova:anq9SXHR@controller/nova_api' /etc/nova/nova.conf
-sed -i -e '/^\[database\]/a\' -e 'connection = mysql+pymysql://nova:anq9SXHR@controller/nova' /etc/nova/nova.conf
+crudini --set /etc/nova/nova.conf api_database connection mysql+pymysql://$(grep NOVA_DB_USER ../.env | cut -d '=' -f2):$(grep NOVA_DB_PASSWORD ../.env | cut -d '=' -f2)@$(grep DEFAULT_URL ../.env | cut -d '=' -f2)/$(grep NOVA_API_DB_NAME ../.env | cut -d '=' -f2)
+crudini --set /etc/nova/nova.conf database connection mysql+pymysql://$(grep NOVA_DB_USER ../.env | cut -d '=' -f2):$(grep NOVA_DB_PASSWORD ../.env | cut -d '=' -f2)@$(grep DEFAULT_URL ../.env | cut -d '=' -f2)/$(grep NOVA_DB_NAME ../.env | cut -d '=' -f2)
 
 #change rabit mq message
-sed -i -e '/^\[DEFAULT\]/a\' -e 'transport_url = rabbit://admin:r32uhdejnkaskj@controller:5672' /etc/nova/nova.conf
+crudini --set /etc/nova/nova.conf DEFAULT transport_url rabbit://$(grep rabbitMQ_USER ../.env | cut -d '=' -f2):$(grep rabbitMQ_PASSWORD ../.env | cut -d '=' -f2)@$(grep DEFAULT_URL ../.env | cut -d '=' -f2):5672 
 
 #change api and keystone auth token
-sed -i -e '/^\[api\]/a\' -e 'auth_strategy = keystone' /etc/nova/nova.conf
+crudini --set /etc/nova/nova.conf api auth_strategy keystone 
 
 
-sed -i -e '/^\[keystone_authtoken\]/a\' -e 'www_authenticate_uri = http://controller:5000/' /etc/nova/nova.conf
-sed -i -e '/^\[keystone_authtoken\]/a\' -e 'auth_url = http://controller:5000/' /etc/nova/nova.conf
-sed -i -e '/^\[keystone_authtoken\]/a\' -e 'memcached_servers = controller:11211' /etc/nova/nova.conf
-sed -i -e '/^\[keystone_authtoken\]/a\' -e 'auth_type=password' /etc/nova/nova.conf
-sed -i -e '/^\[keystone_authtoken\]/a\' -e 'project_domain_name = Default' /etc/nova/nova.conf
-sed -i -e '/^\[keystone_authtoken\]/a\' -e 'user_domain_name = Default' /etc/nova/nova.conf
-sed -i -e '/^\[keystone_authtoken\]/a\' -e 'project_name = service' /etc/nova/nova.conf
-sed -i -e '/^\[keystone_authtoken\]/a\' -e 'username = nova' /etc/nova/nova.conf
-sed -i -e '/^\[keystone_authtoken\]/a\' -e 'password = v3hx4vBB' /etc/nova/nova.conf
+crudini --set /etc/nova/nova.conf keystone_authtoken www_authenticate_uri http://$(grep DEFAULT_URL ../.env | cut -d '=' -f2):5000/ 
+crudini --set /etc/nova/nova.conf keystone_authtoken auth_url http://$(grep DEFAULT_URL ../.env | cut -d '=' -f2):5000/ 
+crudini --set /etc/nova/nova.conf keystone_authtoken memcached_servers $(grep DEFAULT_URL ../.env | cut -d '=' -f2):11211 
+crudini --set /etc/nova/nova.conf keystone_authtoken auth_type=password 
+crudini --set /etc/nova/nova.conf keystone_authtoken project_domain_name $OS_PROJECT_DOMAIN_NAME 
+crudini --set /etc/nova/nova.conf keystone_authtoken user_domain_name $OS_USER_DOMAIN_NAME
+crudini --set /etc/nova/nova.conf keystone_authtoken project_name service 
+crudini --set /etc/nova/nova.conf keystone_authtoken username $(grep NOVA_USER ../.env | cut -d '=' -f2) 
+crudini --set /etc/nova/nova.conf keystone_authtoken password $(grep NOVA_USER ../.env | cut -d '=' -f2)
 #change ip
-sed -i -e '/^\[DEFAULT\]/a\' -e 'my_ip = 127.0.0.1' /etc/nova/nova.conf
+crudini --set /etc/nova/nova.conf DEFAULT my_ip $(grep HOST_IP ../.env | cut -d '=' -f2)
 #vnc
-sed -i -e '/^\[vnc\]/a\' -e 'enabled = true' /etc/nova/nova.conf
-sed -i -e '/^\[vnc\]/a\' -e 'server_listen = $my_ip' /etc/nova/nova.conf
-sed -i -e '/^\[vnc\]/a\' -e 'server_proxyclient_address = $my_ip' /etc/nova/nova.conf
-sed -i -e '/^\[vnc\]/a\' -e 'novncproxy_base_url = http://controller:6080/vnc_auto.html' /etc/nova/nova.conf
+crudini --set /etc/nova/nova.conf vnc enabled true 
+crudini --set /etc/nova/nova.conf vnc server_listen 0.0.0.0
+crudini --set /etc/nova/nova.conf vnc server_proxyclient_address $(grep HOST_IP ../.env | cut -d '=' -f2)
+crudini --set /etc/nova/nova.conf vnc novncproxy_base_url http://$(grep HOST_IP ../.env | cut -d '=' -f2):6080/vnc_auto.html 
 
 #glance
-sed -i -e '/^\[glance\]/a\' -e 'api_servers = http://controller:9292' /etc/nova/nova.conf
+crudini --set /etc/nova/nova.conf glance api_servers http://$(grep DEFAULT_URL ../.env | cut -d '=' -f2):9292 
 
 #oslo_concurrency
-sed -i -e '/^\[oslo_concurrency\]/a\' -e 'lock_path=/var/lib/nova/tmp' /etc/nova/nova.conf
-sed -i '/log_dir/d' /etc/nova/nova.conf
+crudini --set /etc/nova/nova.conf oslo_concurrency lock_path=/var/lib/nova/tmp 
 
 #placement pass
-sed -i -e '/^\[placement\]/a\' -e 'region_name = RegionOne' /etc/nova/nova.conf
-sed -i -e '/^\[placement\]/a\' -e 'project_domain_name = Default' /etc/nova/nova.conf
-sed -i -e '/^\[placement\]/a\' -e 'project_name = service' /etc/nova/nova.conf
-sed -i -e '/^\[placement\]/a\' -e 'auth_type = password' /etc/nova/nova.conf
-sed -i -e '/^\[placement\]/a\' -e 'user_domain_name = Default' /etc/nova/nova.conf
-sed -i -e '/^\[placement\]/a\' -e 'auth_url = http://controller:5000/v3' /etc/nova/nova.conf
-sed -i -e '/^\[placement\]/a\' -e 'username = placement' /etc/nova/nova.conf
-sed -i -e '/^\[placement\]/a\' -e 'password = v3hx4vBB' /etc/nova/nova.conf
+crudini --set /etc/nova/nova.conf placement region_name RegionOne 
+crudini --set /etc/nova/nova.conf placement project_domain_name $OS_PROJECT_DOMAIN_NAME  
+crudini --set /etc/nova/nova.conf placement project_name service 
+crudini --set /etc/nova/nova.conf placement auth_type password 
+crudini --set /etc/nova/nova.conf placement user_domain_name $OS_USER_DOMAIN_NAME 
+crudini --set /etc/nova/nova.conf placement auth_url http://$(grep DEFAULT_URL ../.env | cut -d '=' -f2):5000/v3 
+crudini --set /etc/nova/nova.conf placement username $(grep PLACEMENT_USER ../.env | cut -d '=' -f2) 
+crudini --set /etc/nova/nova.conf placement password $(grep PLACEMENT_PASSWORD ../.env | cut -d '=' -f2)
+
+crudini --del /etc/nova/nova.conf DEFAULT log_dir
 
 echo "populate nova-api database"
 
@@ -91,12 +98,12 @@ service nova-api restart
 service nova-scheduler restart
 service nova-conductor restart
 service nova-novncproxy restart
-egrep -c '(vmx|svm)' /proc/cpuinfo
-sed -i -e '/^\[libvirt\]/a\' -e 'virt_type = qemu' /etc/nova/nova-compute.conf
+
+crudini --set /etc/nova/nova-compute.conf libvirt virt_type kvm
 
 service nova-compute restart
 
 openstack compute service list --service nova-compute
 su -s /bin/sh -c "nova-manage cell_v2 discover_hosts --verbose" nova
 
-sed -i -e '/^\[scheduler\]/a\' -e 'discover_hosts_in_cells_interval = 300' /etc/nova/nova-compute.conf
+crudini --set /etc/nova/nova-compute.conf scheduler discover_hosts_in_cells_interval 300' /etc/nova/nova-compute.conf
