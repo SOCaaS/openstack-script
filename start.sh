@@ -51,3 +51,5 @@ cd ./integration
 cd ..
 
 echo -e "Finish, all service has been deployed!"
+
+exit
