@@ -87,7 +87,7 @@ echo -e "\nediting metadata_agent.ini.conf"
 crudini --set /etc/neutron/metadata_agent.ini DEFAULT nova_metadata_host $(grep DEFAULT_URL ../.env | cut -d '=' -f2)
 crudini --set /etc/neutron/metadata_agent.ini DEFAULT metadata_proxy_shared_secret $(grep METADATA_PROXY_SHARED_SECRET ../.env | cut -d '=' -f2)
 
-echo "\nediting nova.conf"
+echo -e "\nediting nova.conf"
 crudini --set /etc/nova/nova.conf neutron auth_url http://$(grep DEFAULT_URL ../.env | cut -d '=' -f2):5000
 crudini --set /etc/nova/nova.conf neutron auth_type password
 crudini --set /etc/nova/nova.conf neutron project_domain_name $OS_PROJECT_DOMAIN_NAME 
