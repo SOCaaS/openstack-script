@@ -93,8 +93,6 @@ su -s /bin/sh -c "nova-manage db sync" nova
 su -s /bin/sh -c "nova-manage cell_v2 list_cells" nova
 
 echo "finalize installation"
-set -x
-set -v
 
 service nova-api restart
 service nova-scheduler restart
@@ -105,11 +103,15 @@ crudini --set /etc/nova/nova-compute.conf libvirt virt_type kvm
 
 service nova-compute restart
 
-#failed right here
-openstack compute service list --service nova-compute
 su -s /bin/sh -c "nova-manage cell_v2 discover_hosts --verbose" nova
 
 crudini --set /etc/nova/nova-compute.conf scheduler discover_hosts_in_cells_interval 300
 
-set +x
-set +v
+set -x
+set -v
+
+echo -e "\nCheck Nova Installation"
+openstack compute service list
+openstack catalog list
+openstack image list
+nova-status upgrade check

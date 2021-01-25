@@ -120,3 +120,6 @@ service nova-compute restart
 
 echo -e "\nrestart linux bridge agent"
 service neutron-linuxbridge-agent restart
+
+echo -e "\nCheck Neutron Installation"
+openstack network agent list
