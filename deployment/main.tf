@@ -8,7 +8,7 @@ module "digitalocean" {
     source              = "./droplet"
     servers             = [
         {
-            name = "script-openstack-test",
+            name = "openstack-script-test-do",
             type = "s-4vcpu-8gb"
         }
     ]
