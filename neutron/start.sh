@@ -109,7 +109,7 @@ su -s /bin/sh -c "neutron-db-manage --config-file /etc/neutron/neutron.conf --co
 echo -e "\nrestart compute API service"
 service nova-api restart
 
-echo -e"\nrestart networking services"
+echo -e "\nrestart networking services"
 service neutron-server restart
 service neutron-linuxbridge-agent restart
 service neutron-dhcp-agent restart
@@ -118,5 +118,5 @@ service neutron-metadata-agent restart
 echo -e "\nrestart compute service"
 service nova-compute restart
 
-echo -e"\nrestart linux bridge agent"
+echo -e "\nrestart linux bridge agent"
 service neutron-linuxbridge-agent restart
