@@ -3,23 +3,27 @@ apt update
 apt upgrade -y
 
 echo -e "\nCreate a glance sql user"
+
+sed -i -e "s|{{ GLANCE_DB_USER }}|$(grep GLANCE_DB_USER ../.env | cut -d '=' -f2)|g" ./glance.sql
+sed -i -e "s|{{ GLANCE_DB_PASSWORD }}|$(grep GLANCE_DB_PASSWORD ../.env | cut -d '=' -f2)|g" ./glance.sql
+
 mysql -e "source glance.sql";
 
 # Export environment variable
 echo -e "\nExport environment variable"
-export OS_USERNAME=admin
-export OS_PASSWORD=9zExzZzL
-export OS_PROJECT_NAME=admin
-export OS_USER_DOMAIN_NAME=Default
-export OS_PROJECT_DOMAIN_NAME=Default
-export OS_AUTH_URL=http://controller:5000/v3
-export OS_IDENTITY_API_VERSION=3
+export OS_USERNAME=$(grep OS_USERNAME ../.env | cut -d '=' -f2)
+export OS_PASSWORD=$(grep OS_PASSWORD ../.env | cut -d '=' -f2)
+export OS_PROJECT_NAME=$(grep OS_PROJECT_NAME ../.env | cut -d '=' -f2)
+export OS_USER_DOMAIN_NAME=$(grep OS_USER_DOMAIN_NAME ../.env | cut -d '=' -f2)
+export OS_PROJECT_DOMAIN_NAME=$(grep OS_PROJECT_DOMAIN_NAME ../.env | cut -d '=' -f2)
+export OS_AUTH_URL=$(grep OS_AUTH_URL ../.env | cut -d '=' -f2)
+export OS_IDENTITY_API_VERSION=$(grep OS_IDENTITY_API_VERSION ../.env | cut -d '=' -f2)
 
 echo -e "\nCreate openstack user on keystone"
-openstack user create --domain $(grep OS_PROJECT_DOMAIN_NAME ../.env | cut -d '=' -f2) --password "$(grep GLANCE_PASSWORD ../.env | cut -d '=' -f2)" $(grep GLANCE_USER ../.env | cut -d '=' -f2)
+openstack user create --domain $OS_PROJECT_DOMAIN_NAME --password "$(grep GLANCE_PASSWORD ../.env | cut -d '=' -f2)" $(grep GLANCE_USER ../.env | cut -d '=' -f2)
 
 echo -e "\nCreate a project"
-openstack project create --domain $(grep OS_PROJECT_DOMAIN_NAME ../.env | cut -d '=' -f2) --description "Service Project" service
+openstack project create --domain $OS_PROJECT_DOMAIN_NAME --description "Service Project" service
 openstack role add --project service --user $(grep GLANCE_USER ../.env | cut -d '=' -f2) admin
 
 echo -e "\nCreate the glance service entity"
@@ -36,20 +40,35 @@ apt install -y glance
 echo -e "\nEditing glance-api.conf"
 crudini --set /etc/glance/glance-api.conf database connection mysql+pymysql://$(grep GLANCE_DB_USER ../.env | cut -d '=' -f2):$(grep GLANCE_DB_PASSWORD ../.env | cut -d '=' -f2)@$(grep DEFAULT_URL ../.env | cut -d '=' -f2)/$(grep GLANCE_DB_NAME ../.env | cut -d '=' -f2)
 
-sed -i -e '/^\[keystone_authtoken\]/a\' -e "auth_url = http://controller:5000" /etc/glance/glance-api.conf
-sed -i -e '/^\[keystone_authtoken\]/a\' -e "memcached_servers = controller:11211" /etc/glance/glance-api.conf
-sed -i -e '/^\[keystone_authtoken\]/a\' -e "auth_type = password" /etc/glance/glance-api.conf
-sed -i -e '/^\[keystone_authtoken\]/a\' -e "project_domain_name = Default" /etc/glance/glance-api.conf
-sed -i -e '/^\[keystone_authtoken\]/a\' -e "user_domain_name = Default" /etc/glance/glance-api.conf
-sed -i -e '/^\[keystone_authtoken\]/a\' -e "project_name = service" /etc/glance/glance-api.conf
-sed -i -e '/^\[keystone_authtoken\]/a\' -e "username = glance" /etc/glance/glance-api.conf
-sed -i -e '/^\[keystone_authtoken\]/a\' -e "password = yrgehdbsjkhu32897124" /etc/glance/glance-api.conf
+crudini --set /etc/glance/glance-api.conf keystone_authtoken auth_url http://$(grep DEFAULT_URL ../.env | cut -d '=' -f2):5000 
+crudini --set /etc/glance/glance-api.conf keystone_authtoken memcached_servers $(grep DEFAULT_URL ../.env | cut -d '=' -f2):11211 
+crudini --set /etc/glance/glance-api.conf keystone_authtoken auth_type password 
+crudini --set /etc/glance/glance-api.conf keystone_authtoken project_domain_name $OS_PROJECT_DOMAIN_NAME 
+crudini --set /etc/glance/glance-api.conf keystone_authtoken user_domain_name $OS_USER_DOMAIN_NAME
+crudini --set /etc/glance/glance-api.conf keystone_authtoken project_name service
+crudini --set /etc/glance/glance-api.conf keystone_authtoken username $(grep GLANCE_USER ../.env | cut -d '=' -f2)
+crudini --set /etc/glance/glance-api.conf keystone_authtoken password $(grep GLANCE_PASSWORD ../.env | cut -d '=' -f2)
 
-sed -i -e '/^\[paste_deploy\]/a\' -e 'flavor = keystone' /etc/glance/glance-api.conf
+crudini --set /etc/glance/glance-api.conf paste_deploy flavor keystone 
 
-sed -i -e '/^\[glance_store\]/a\' -e 'stores = file,http' /etc/glance/glance-api.conf
-sed -i -e '/^\[glance_store\]/a\' -e 'default_store = file' /etc/glance/glance-api.conf
-sed -i -e '/^\[glance_store\]/a\' -e 'filesystem_store_datadir = /var/lib/glance/images/' /etc/glance/glance-api.conf
+crudini --set /etc/glance/glance-api.conf glance_store stores "file,http" 
+crudini --set /etc/glance/glance-api.conf glance_store default_store file 
+crudini --set /etc/glance/glance-api.conf glance_store filesystem_store_datadir /var/lib/glance/images/ 
+
+echo -e "\nEditing glance-registry.conf"
+
+crudini --set /etc/glance/glance-registry.conf database connection mysql+pymysql://$(grep GLANCE_DB_USER ../.env | cut -d '=' -f2):$(grep GLANCE_DB_PASSWORD ../.env | cut -d '=' -f2)@$(grep DEFAULT_URL ../.env | cut -d '=' -f2)/$(grep GLANCE_DB_NAME ../.env | cut -d '=' -f2)
+
+crudini --set /etc/glance/glance-registry.conf keystone_authtoken auth_url http://$(grep DEFAULT_URL ../.env | cut -d '=' -f2):5000 
+crudini --set /etc/glance/glance-registry.conf keystone_authtoken memcached_servers $(grep DEFAULT_URL ../.env | cut -d '=' -f2):11211 
+crudini --set /etc/glance/glance-registry.conf keystone_authtoken auth_type password 
+crudini --set /etc/glance/glance-registry.conf keystone_authtoken project_domain_name $OS_PROJECT_DOMAIN_NAME 
+crudini --set /etc/glance/glance-registry.conf keystone_authtoken user_domain_name $OS_USER_DOMAIN_NAME
+crudini --set /etc/glance/glance-registry.conf keystone_authtoken project_name service
+crudini --set /etc/glance/glance-registry.conf keystone_authtoken username $(grep GLANCE_USER ../.env | cut -d '=' -f2)
+crudini --set /etc/glance/glance-registry.conf keystone_authtoken password $(grep GLANCE_PASSWORD ../.env | cut -d '=' -f2)
+
+crudini --set /etc/glance/glance-registry.conf paste_deploy flavor keystone 
 
 echo -e "\nDB Sync Glance"
 set +e
@@ -57,7 +76,9 @@ su -s /bin/sh -c "glance-manage db_sync" glance
 set -e
 
 echo -e "\nGlance Restart"
+service glance-registry restart
 service glance-api restart
 
 echo -e "\n Check Glance Status"
 service glance-api status
+service glance-registry status
