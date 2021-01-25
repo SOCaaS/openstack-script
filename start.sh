@@ -24,10 +24,10 @@ cd ./placement
 ./start.sh
 cd ..
 
-# echo -e "\nStart Nova!"
-# cd ./nova
-# ./start.sh
-# cd ..
+echo -e "\nStart Nova!"
+cd ./nova
+./start.sh
+cd ..
 
 # echo -e "\nStart Neutron!"
 # cd ./neutron
