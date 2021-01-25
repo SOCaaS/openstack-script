@@ -1,0 +1,11 @@
+[Unit]
+Description=tailon
+
+[Service]
+User=root
+WorkingDirectory=/root/
+ExecStart=/usr/local/bin/tailon -p basic -u admin:whenguardian2021 -b 0.0.0.0:9999 -f /var/log/*/*
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
