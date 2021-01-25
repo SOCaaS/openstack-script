@@ -39,9 +39,9 @@ cd ..
 # ./start.sh
 # cd ..
 
-# echo -e "\nStart Horizon!"
-# cd ./horizon
-# ./start.sh
-# cd ..
+echo -e "\nStart Horizon!"
+cd ./horizon
+./start.sh
+cd ..
 
 echo -e "Finish, all service has been deployed!"
