@@ -76,9 +76,7 @@ su -s /bin/sh -c "glance-manage db_sync" glance
 set -e
 
 echo -e "\nGlance Restart"
-service glance-registry restart
 service glance-api restart
 
 echo -e "\n Check Glance Status"
 service glance-api status
-service glance-registry status
