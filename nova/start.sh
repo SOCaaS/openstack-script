@@ -105,6 +105,7 @@ crudini --set /etc/nova/nova-compute.conf libvirt virt_type kvm
 
 service nova-compute restart
 
+#failed right here
 openstack compute service list --service nova-compute
 su -s /bin/sh -c "nova-manage cell_v2 discover_hosts --verbose" nova
 
