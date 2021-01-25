@@ -3,33 +3,38 @@ apt update
 apt upgrade -y
 
 # run placement.sql
-echo "run placement.sql"
+echo -e "\n Create a placement sql user"
+
+sed -i -e "s|{{ PLACEMENT_DB_NAME }}|$(grep PLACEMENT_DB_NAME ../.env | cut -d '=' -f2)|g" ./placement.sql
+sed -i -e "s|{{ PLACEMENT_DB_USER }}|$(grep PLACEMENT_DB_USER ../.env | cut -d '=' -f2)|g" ./placement.sql
+sed -i -e "s|{{ PLACEMENT_DB_PASSWORD }}|$(grep PLACEMENT_DB_PASSWORD ../.env | cut -d '=' -f2)|g" ./placement.sql
+
 mysql -e "source placement.sql";
 
 # export variables
-echo "export variables"
-export OS_USERNAME=admin
-export OS_PASSWORD=9zExzZzL
-export OS_PROJECT_NAME=admin
-export OS_USER_DOMAIN_NAME=Default
-export OS_PROJECT_DOMAIN_NAME=Default
-export OS_AUTH_URL=http://controller:5000/v3
-export OS_IDENTITY_API_VERSION=3
+echo -e "\nExport environment variable"
+export OS_USERNAME=$(grep OS_USERNAME ../.env | cut -d '=' -f2)
+export OS_PASSWORD=$(grep OS_PASSWORD ../.env | cut -d '=' -f2)
+export OS_PROJECT_NAME=$(grep OS_PROJECT_NAME ../.env | cut -d '=' -f2)
+export OS_USER_DOMAIN_NAME=$(grep OS_USER_DOMAIN_NAME ../.env | cut -d '=' -f2)
+export OS_PROJECT_DOMAIN_NAME=$(grep OS_PROJECT_DOMAIN_NAME ../.env | cut -d '=' -f2)
+export OS_AUTH_URL=$(grep OS_AUTH_URL ../.env | cut -d '=' -f2)
+export OS_IDENTITY_API_VERSION=$(grep OS_IDENTITY_API_VERSION ../.env | cut -d '=' -f2)
 
 # create placement user and give admin role
 echo "creating openstack user 'placement'"
-openstack user create --domain default --password v3hx4vBB placement
-openstack role add --project service --user placement admin
+openstack user create --domain $OS_PROJECT_DOMAIN_NAME --password "$(grep PLACEMENT_PASSWORD ../.env | cut -d '=' -f2)" $(grep PLACEMENT_USER ../.env | cut -d '=' -f2)
+openstack role add --project service --user $(grep PLACEMENT_USER ../.env | cut -d '=' -f2) admin
 
 # Create the Placement API entry in the service catalog
 echo "create API entry in the service catalog"
-openstack service create --name placement --description "Placement API" placement
+openstack service create --name $(grep PLACEMENT_USER ../.env | cut -d '=' -f2) --description "Placement API" placement
 
 # Create the Placement API service endpoints
 echo "creating API service endpoints"
-openstack endpoint create --region RegionOne placement public http://controller:8778
-openstack endpoint create --region RegionOne placement internal http://controller:8778
-openstack endpoint create --region RegionOne placement admin http://controller:8778
+openstack endpoint create --region RegionOne placement public http://$(grep DEFAULT_URL ../.env | cut -d '=' -f2):8778
+openstack endpoint create --region RegionOne placement internal http://$(grep DEFAULT_URL ../.env | cut -d '=' -f2):8778
+openstack endpoint create --region RegionOne placement admin http://$(grep DEFAULT_URL ../.env | cut -d '=' -f2):8778
 
 # install placement api
 echo "installing placement-api"
@@ -38,18 +43,18 @@ apt install -y placement-api
 # edit placement.conf
 echo "editing placement.conf"
 
-sed -i -e "s|^connection = .*|connection = mysql+pymysql://placement:anq9SXHR@controller/placement|g" /etc/placement/placement.conf
+crudini --set /etc/placement/placement.conf connection mysql+pymysql://$(grep PLACEMENT_DB_USER ../.env | cut -d '=' -f2):$(grep PLACEMENT_DB_PASSWORD ../.env | cut -d '=' -f2)@$(grep DEFAULT_URL ../.env | cut -d '=' -f2)/$(grep PLACEMENT_DB_NAME ../.env | cut -d '=' -f2)
 
-sed -i -e '/^\[api\]/a\' -e 'auth_strategy = keystone' /etc/placement/placement.conf
+crudini --set /etc/placement/placement.conf api auth_strategy keystone 
 
-sed -i -e '/^\[keystone_authtoken\]/a\' -e "auth_url = http://controller:5000" /etc/placement/placement.conf
-sed -i -e '/^\[keystone_authtoken\]/a\' -e "memcached_servers = controller:11211" /etc/placement/placement.conf
-sed -i -e '/^\[keystone_authtoken\]/a\' -e "auth_type = password" /etc/placement/placement.conf
-sed -i -e '/^\[keystone_authtoken\]/a\' -e "project_domain_name = Default" /etc/placement/placement.conf
-sed -i -e '/^\[keystone_authtoken\]/a\' -e "user_domain_name = Default" /etc/placement/placement.conf
-sed -i -e '/^\[keystone_authtoken\]/a\' -e "project_name = service" /etc/placement/placement.conf
-sed -i -e '/^\[keystone_authtoken\]/a\' -e "username = placement" /etc/placement/placement.conf
-sed -i -e '/^\[keystone_authtoken\]/a\' -e "password = v3hx4vBB" /etc/placement/placement.conf
+crudini --set /etc/placement/placement.conf keystone_authtoken auth_url http://$(grep DEFAULT_URL ../.env | cut -d '=' -f2):5000 
+crudini --set /etc/placement/placement.conf keystone_authtoken memcached_servers $(grep DEFAULT_URL ../.env | cut -d '=' -f2):11211 
+crudini --set /etc/placement/placement.conf keystone_authtoken auth_type password 
+crudini --set /etc/placement/placement.conf keystone_authtoken project_domain_name $OS_PROJECT_DOMAIN_NAME 
+crudini --set /etc/placement/placement.conf keystone_authtoken user_domain_name $OS_USER_DOMAIN_NAME
+crudini --set /etc/placement/placement.conf keystone_authtoken project_name service 
+crudini --set /etc/placement/placement.conf keystone_authtoken username $(grep PLACEMENT_USER ../.env | cut -d '=' -f2)
+crudini --set /etc/placement/placement.conf keystone_authtoken password $(grep PLACEMENT_PASSWORD ../.env | cut -d '=' -f2)
 
 # populate placement database
 echo "populate placement database"

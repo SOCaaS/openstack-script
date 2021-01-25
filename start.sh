@@ -34,6 +34,11 @@ cd ..
 # ./start.sh
 # cd ..
 
+# echo -e "\nStart Cinder!"
+# cd ./cinder
+# ./start.sh
+# cd ..
+
 # echo -e "\nStart Horizon!"
 # cd ./horizon
 # ./start.sh
