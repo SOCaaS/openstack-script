@@ -34,7 +34,7 @@ openstack endpoint create --region RegionOne network internal http://$(grep DEFA
 openstack endpoint create --region RegionOne network admin http://$(grep DEFAULT_URL ../.env | cut -d '=' -f2):9696
 
 echo -e "\nInstalling networking option1"
-apt install -y neutron-server neutron-plugin-ml2 neutron-linuxbridge-agent neutron-dhcp-agent neutron-metadata-agent
+apt install -y neutron-server neutron-plugin-ml2 neutron-linuxbridge-agent neutron-dhcp-agent neutron-metadata-agent neutron-l3-agent
 
 echo -e "\neditting neutron.conf"
 crudini --set /etc/neutron/neutron.conf database connection mysql+pymysql://$(grep NEUTRON_DB_USER ../.env | cut -d '=' -f2):$(grep NEUTRON_DB_PASSWORD ../.env | cut -d '=' -f2)@$(grep DEFAULT_URL ../.env | cut -d '=' -f2)/$(grep NEUTRON_DB_NAME ../.env | cut -d '=' -f2)
@@ -42,10 +42,12 @@ crudini --set /etc/neutron/neutron.conf database connection mysql+pymysql://$(gr
 crudini --set /etc/neutron/neutron.conf DEFAULT core_plugin m12
 crudini --set /etc/neutron/neutron.conf DEFAULT service_plugins router
 crudini --set /etc/neutron/neutron.conf DEFAULT transport_url rabbit://$(grep rabbitMQ_USER ../.env | cut -d '=' -f2):$(grep rabbitMQ_PASSWORD ../.env | cut -d '=' -f2)@$(grep DEFAULT_URL ../.env | cut -d '=' -f2):5672
-crudini --set /etc/neutron/neutron.conf DEFAULT auth_strategy keystone
+crudini --set /etc/neutron/neutron.conf DEFAULT allow_overlapping_ips true
 
-crudini --set /etc/neutron/neutron.conf keystone_authtoken www_authenticate_uri http://$(grep DEFAULT_URL ../.env | cut -d '=' -f2):5000
-crudini --set /etc/neutron/neutron.conf keystone_authtoken auth_url http://$(grep DEFAULT_URL ../.env | cut -d '=' -f2):5000
+crudini --set /etc/neutron/neutron.conf api auth_strategy keystone
+
+crudini --set /etc/neutron/neutron.conf keystone_authtoken www_authenticate_uri http://$(grep DEFAULT_URL ../.env | cut -d '=' -f2):5000/
+crudini --set /etc/neutron/neutron.conf keystone_authtoken auth_url http://$(grep DEFAULT_URL ../.env | cut -d '=' -f2):5000/
 crudini --set /etc/neutron/neutron.conf keystone_authtoken memcached_servers $(grep DEFAULT_URL ../.env | cut -d '=' -f2):11211
 crudini --set /etc/neutron/neutron.conf keystone_authtoken auth_type password
 crudini --set /etc/neutron/neutron.conf keystone_authtoken project_domain_name $OS_PROJECT_DOMAIN_NAME 
@@ -57,7 +59,7 @@ crudini --set /etc/neutron/neutron.conf keystone_authtoken password $(grep NEUTR
 crudini --set /etc/neutron/neutron.conf DEFAULT notify_nova_on_port_status_changes true
 crudini --set /etc/neutron/neutron.conf DEFAULT notify_nova_on_port_data_changes true
 
-crudini --set /etc/neutron/neutron.conf nova auth_url http://$(grep DEFAULT_URL ../.env | cut -d '=' -f2):5000
+crudini --set /etc/neutron/neutron.conf nova auth_url http://$(grep DEFAULT_URL ../.env | cut -d '=' -f2):5000/
 crudini --set /etc/neutron/neutron.conf nova auth_type password
 crudini --set /etc/neutron/neutron.conf nova project_domain_name $OS_PROJECT_DOMAIN_NAME 
 crudini --set /etc/neutron/neutron.conf nova user_domain_name $OS_USER_DOMAIN_NAME
