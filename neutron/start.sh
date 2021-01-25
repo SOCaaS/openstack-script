@@ -1,4 +1,5 @@
 set -e
+
 apt update
 
 
@@ -6,6 +7,8 @@ echo -e "\n Create a neutron sql user"
 sed -i -e "s|{{ NEUTRON_DB_NAME }}|$(grep NEUTRON_DB_NAME ../.env | cut -d '=' -f2)|g" ./neutron.sql
 sed -i -e "s|{{ NEUTRON_DB_USER }}|$(grep NEUTRON_DB_USER ../.env | cut -d '=' -f2)|g" ./neutron.sql
 sed -i -e "s|{{ NEUTRON_DB_PASSWORD }}|$(grep NEUTRON_DB_PASSWORD ../.env | cut -d '=' -f2)|g" ./neutron.sql
+
+mysql -e "source neutron.sql";
 
 # Export environment variable
 echo -e "\nExport environment variable"
