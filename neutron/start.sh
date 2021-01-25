@@ -83,6 +83,9 @@ crudini --set /etc/neutron/plugins/ml2/linuxbridge_agent.ini vxlan enable_vxlan 
 crudini --set /etc/neutron/plugins/ml2/linuxbridge_agent.ini securitygroup enable_security_group true
 crudini --set /etc/neutron/plugins/ml2/linuxbridge_agent.ini securitygroup firewall_driver neutron.agent.linux.iptables_firewall.IptablesFirewallDriver
 
+echo -e "\nConfigure the Layer-3 Agent"
+crudini --set /etc/neutron/l3_agent.ini DEFAULT interface_driver linuxbridge
+
 echo -e "\ndhcp_agent.ini"
 crudini --set /etc/neutron/dhcp_agent.ini DEFAULT interface_driver linuxbridge
 crudini --set /etc/neutron/dhcp_agent.ini DEFAULT dhcp_driver neutron.agent.linux.dhcp.Dnsmasq
