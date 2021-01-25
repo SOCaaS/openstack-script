@@ -3,11 +3,11 @@ apt update
 apt upgrade -y
 
 echo -e "\n Create a nova sql user"
-sed -i -e "s|{{ NOVA_API_DB_NAME }}|$(grep NOVA_API_DB_NAME ../.env | cut -d '=' -f2)|g" ./placement.sql
-sed -i -e "s|{{ NOVA_CELL0_DB_NAME }}|$(grep NOVA_CELL0_DB_NAME ../.env | cut -d '=' -f2)|g" ./placement.sql
-sed -i -e "s|{{ NOVA_DB_NAME }}|$(grep NOVA_DB_NAME ../.env | cut -d '=' -f2)|g" ./placement.sql
-sed -i -e "s|{{ NOVA_DB_USER }}|$(grep NOVA_DB_USER ../.env | cut -d '=' -f2)|g" ./placement.sql
-sed -i -e "s|{{ NOVA_DB_PASSWORD }}|$(grep NOVA_DB_PASSWORD ../.env | cut -d '=' -f2)|g" ./placement.sql
+sed -i -e "s|{{ NOVA_API_DB_NAME }}|$(grep NOVA_API_DB_NAME ../.env | cut -d '=' -f2)|g" ./nova.sql
+sed -i -e "s|{{ NOVA_CELL0_DB_NAME }}|$(grep NOVA_CELL0_DB_NAME ../.env | cut -d '=' -f2)|g" ./nova.sql
+sed -i -e "s|{{ NOVA_DB_NAME }}|$(grep NOVA_DB_NAME ../.env | cut -d '=' -f2)|g" ./nova.sql
+sed -i -e "s|{{ NOVA_DB_USER }}|$(grep NOVA_DB_USER ../.env | cut -d '=' -f2)|g" ./nova.sql
+sed -i -e "s|{{ NOVA_DB_PASSWORD }}|$(grep NOVA_DB_PASSWORD ../.env | cut -d '=' -f2)|g" ./nova.sql
 
 mysql -e "source nova.sql";
 
