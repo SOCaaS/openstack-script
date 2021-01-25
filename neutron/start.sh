@@ -17,7 +17,7 @@ export OS_PROJECT_DOMAIN_NAME=$(grep OS_PROJECT_DOMAIN_NAME ../.env | cut -d '='
 export OS_AUTH_URL=$(grep OS_AUTH_URL ../.env | cut -d '=' -f2)
 export OS_IDENTITY_API_VERSION=$(grep OS_IDENTITY_API_VERSION ../.env | cut -d '=' -f2)
 
-echo -e "\nInstalling  $(grep DEFAULT_URL ../.env | cut -d '=' -f2) node"
+echo -e "\nInstalling controller node"
 echo -e "\nCreating user and giving admin role"
 openstack user create --domain $OS_PROJECT_DOMAIN_NAME --password "$(grep NEUTRON_PASSWORD ../.env | cut -d '=' -f2)" $(grep NEUTRON_USER ../.env | cut -d '=' -f2)
 openstack role add --project service --user $(grep NEUTRON_USER ../.env | cut -d '=' -f2) admin
@@ -99,21 +99,21 @@ crudini --set /etc/nova/nova.conf neutron password $(grep NEUTRON_PASSWORD ../.e
 crudini --set /etc/nova/nova.conf neutron service_metadata_proxy true
 crudini --set /etc/nova/nova.conf neutron metadata_proxy_shared_secret $(grep METADATA_PROXY_SHARED_SECRET ../.env | cut -d '=' -f2)
 
-echo "\nfinalize installation"
-echo "\npopulate database"
+echo -e "\nfinalize installation"
+echo -e "\npopulate database"
 su -s /bin/sh -c "neutron-db-manage --config-file /etc/neutron/neutron.conf --config-file /etc/neutron/plugins/ml2/ml2_conf.ini upgrade head" neutron
 
-echo "\nrestart compute API service"
+echo -e "\nrestart compute API service"
 service nova-api restart
 
-echo "\nrsetart networking services"
+echo -e"\nrestart networking services"
 service neutron-server restart
 service neutron-linuxbridge-agent restart
 service neutron-dhcp-agent restart
 service neutron-metadata-agent restart
 
-echo "\nrestart compute service"
+echo -e "\nrestart compute service"
 service nova-compute restart
 
-echo "\nrestart linux bridge agent"
+echo -e"\nrestart linux bridge agent"
 service neutron-linuxbridge-agent restart
