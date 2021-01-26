@@ -45,6 +45,11 @@ cd ./horizon
 ./start.sh
 cd ..
 
+echo -e "\nAdd Flavors!"
+cd ./flavors
+./start.sh
+cd ..
+
 echo -e "\nStart Integration Stack!"
 cd ./integration
 ./start.sh
