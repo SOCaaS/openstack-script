@@ -82,6 +82,8 @@ crudini --set /etc/nova/nova.conf placement auth_url http://$(grep DEFAULT_URL .
 crudini --set /etc/nova/nova.conf placement username $(grep PLACEMENT_USER ../.env | cut -d '=' -f2) 
 crudini --set /etc/nova/nova.conf placement password $(grep PLACEMENT_PASSWORD ../.env | cut -d '=' -f2)
 
+crudini --set /etc/nova/nova.conf libvirt inject_password true
+
 crudini --del /etc/nova/nova.conf DEFAULT log_dir
 
 echo "populate nova-api database"
