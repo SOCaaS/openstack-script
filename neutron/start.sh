@@ -126,6 +126,9 @@ service neutron-metadata-agent restart
 echo -e "\nrestart compute service"
 service nova-compute restart
 
+#This is to rediscover host
+su -s /bin/sh -c "nova-manage cell_v2 discover_hosts --verbose" nova
+
 echo -e "\nrestart linux bridge agent"
 service neutron-linuxbridge-agent restart
 

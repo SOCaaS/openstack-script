@@ -63,8 +63,8 @@ crudini --set /etc/nova/nova.conf DEFAULT my_ip $(grep HOST_IP ../.env | cut -d 
 #vnc
 crudini --set /etc/nova/nova.conf vnc enabled true 
 crudini --set /etc/nova/nova.conf vnc server_listen 0.0.0.0
-crudini --set /etc/nova/nova.conf vnc server_proxyclient_address $(grep HOST_IP ../.env | cut -d '=' -f2)
-crudini --set /etc/nova/nova.conf vnc novncproxy_base_url http://$(grep HOST_IP ../.env | cut -d '=' -f2):6080/vnc_auto.html 
+crudini --set /etc/nova/nova.conf vnc server_proxyclient_address $(grep DEFAULT_URL ../.env | cut -d '=' -f2)
+crudini --set /etc/nova/nova.conf vnc novncproxy_base_url http://$(grep DEFAULT_URL ../.env | cut -d '=' -f2):6080/vnc_auto.html 
 
 #glance
 crudini --set /etc/nova/nova.conf glance api_servers http://$(grep DEFAULT_URL ../.env | cut -d '=' -f2):9292 
