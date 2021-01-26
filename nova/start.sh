@@ -83,6 +83,8 @@ crudini --set /etc/nova/nova.conf placement username $(grep PLACEMENT_USER ../.e
 crudini --set /etc/nova/nova.conf placement password $(grep PLACEMENT_PASSWORD ../.env | cut -d '=' -f2)
 
 crudini --set /etc/nova/nova.conf libvirt inject_password true
+crudini --set /etc/nova/nova.conf libvirt inject_key true
+crudini --set /etc/nova/nova.conf libvirt inject_partition -1
 
 crudini --del /etc/nova/nova.conf DEFAULT log_dir
 
