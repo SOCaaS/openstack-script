@@ -91,4 +91,7 @@ cd ..
 
 systemctl restart tailon.service
 
+echo -e "\nFinal check on installation!"
+neutron net-list
+
 echo -e "\nFinish, all service has been deployed!"
