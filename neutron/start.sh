@@ -12,7 +12,7 @@ mysql -e "source neutron.sql";
 
 # Export environment variable
 echo -e "\nExport environment variable"
-export OS_USERNAME=$(grep OS_USERNAME ../.env | cut -d '=' -f2)
+export OS_USERNAME=$OS_USERNAME
 export OS_PASSWORD=$(grep OS_PASSWORD ../.env | cut -d '=' -f2)
 export OS_PROJECT_NAME=$(grep OS_PROJECT_NAME ../.env | cut -d '=' -f2)
 export OS_USER_DOMAIN_NAME=$(grep OS_USER_DOMAIN_NAME ../.env | cut -d '=' -f2)
@@ -29,26 +29,26 @@ echo -e "\nCreate neutron service entity"
 openstack service create --name $(grep NEUTRON_USER ../.env | cut -d '=' -f2) --description "OpenStack Networking" network
 
 echo -e "\ncreating network service API endpoints"
-openstack endpoint create --region RegionOne network public http://$(grep DEFAULT_URL ../.env | cut -d '=' -f2):9696
-openstack endpoint create --region RegionOne network internal http://$(grep DEFAULT_URL ../.env | cut -d '=' -f2):9696
-openstack endpoint create --region RegionOne network admin http://$(grep DEFAULT_URL ../.env | cut -d '=' -f2):9696
+openstack endpoint create --region RegionOne network public http://$DEFAULT_URL:9696
+openstack endpoint create --region RegionOne network internal http://$DEFAULT_URL:9696
+openstack endpoint create --region RegionOne network admin http://$DEFAULT_URL:9696
 
 echo -e "\nInstalling networking option1"
 apt install -y neutron-server neutron-plugin-ml2 neutron-linuxbridge-agent neutron-dhcp-agent neutron-metadata-agent neutron-l3-agent
 
 echo -e "\neditting neutron.conf"
-crudini --set /etc/neutron/neutron.conf database connection mysql+pymysql://$(grep NEUTRON_DB_USER ../.env | cut -d '=' -f2):$(grep NEUTRON_DB_PASSWORD ../.env | cut -d '=' -f2)@$(grep DEFAULT_URL ../.env | cut -d '=' -f2)/$(grep NEUTRON_DB_NAME ../.env | cut -d '=' -f2)
+crudini --set /etc/neutron/neutron.conf database connection mysql+pymysql://$(grep NEUTRON_DB_USER ../.env | cut -d '=' -f2):$(grep NEUTRON_DB_PASSWORD ../.env | cut -d '=' -f2)@$DEFAULT_URL/$(grep NEUTRON_DB_NAME ../.env | cut -d '=' -f2)
 
 crudini --set /etc/neutron/neutron.conf DEFAULT core_plugin neutron.plugins.ml2.plugin.Ml2Plugin
 crudini --set /etc/neutron/neutron.conf DEFAULT service_plugins router
-crudini --set /etc/neutron/neutron.conf DEFAULT transport_url rabbit://$(grep rabbitMQ_USER ../.env | cut -d '=' -f2):$(grep rabbitMQ_PASSWORD ../.env | cut -d '=' -f2)@$(grep DEFAULT_URL ../.env | cut -d '=' -f2):5672
+crudini --set /etc/neutron/neutron.conf DEFAULT transport_url rabbit://$rabbitMQ_USER:$rabbitMQ_PASSWORD@$DEFAULT_URL:5672
 crudini --set /etc/neutron/neutron.conf DEFAULT allow_overlapping_ips true
 
 crudini --set /etc/neutron/neutron.conf api auth_strategy keystone
 
-crudini --set /etc/neutron/neutron.conf keystone_authtoken www_authenticate_uri http://$(grep DEFAULT_URL ../.env | cut -d '=' -f2):5000/
-crudini --set /etc/neutron/neutron.conf keystone_authtoken auth_url http://$(grep DEFAULT_URL ../.env | cut -d '=' -f2):5000/
-crudini --set /etc/neutron/neutron.conf keystone_authtoken memcached_servers $(grep DEFAULT_URL ../.env | cut -d '=' -f2):11211
+crudini --set /etc/neutron/neutron.conf keystone_authtoken www_authenticate_uri http://$DEFAULT_URL:5000/
+crudini --set /etc/neutron/neutron.conf keystone_authtoken auth_url http://$DEFAULT_URL:5000/
+crudini --set /etc/neutron/neutron.conf keystone_authtoken memcached_servers $DEFAULT_URL:11211
 crudini --set /etc/neutron/neutron.conf keystone_authtoken auth_type password
 crudini --set /etc/neutron/neutron.conf keystone_authtoken project_domain_name $OS_PROJECT_DOMAIN_NAME 
 crudini --set /etc/neutron/neutron.conf keystone_authtoken user_domain_name $OS_USER_DOMAIN_NAME
@@ -59,7 +59,7 @@ crudini --set /etc/neutron/neutron.conf keystone_authtoken password $(grep NEUTR
 crudini --set /etc/neutron/neutron.conf DEFAULT notify_nova_on_port_status_changes true
 crudini --set /etc/neutron/neutron.conf DEFAULT notify_nova_on_port_data_changes true
 
-crudini --set /etc/neutron/neutron.conf nova auth_url http://$(grep DEFAULT_URL ../.env | cut -d '=' -f2):5000/
+crudini --set /etc/neutron/neutron.conf nova auth_url http://$DEFAULT_URL:5000/
 crudini --set /etc/neutron/neutron.conf nova auth_type password
 crudini --set /etc/neutron/neutron.conf nova project_domain_name $OS_PROJECT_DOMAIN_NAME 
 crudini --set /etc/neutron/neutron.conf nova user_domain_name $OS_USER_DOMAIN_NAME
@@ -81,7 +81,7 @@ crudini --set /etc/neutron/plugins/ml2/ml2_conf.ini securitygroup enable_ipset t
 echo -e "\nlinuxbridge_agent.ini"
 crudini --set /etc/neutron/plugins/ml2/linuxbridge_agent.ini linux_bridge physical_interface_mappings provider:eth0
 crudini --set /etc/neutron/plugins/ml2/linuxbridge_agent.ini vxlan enable_vxlan true
-crudini --set /etc/neutron/plugins/ml2/linuxbridge_agent.ini vxlan local_ip $(grep HOST_IP ../.env | cut -d '=' -f2)
+crudini --set /etc/neutron/plugins/ml2/linuxbridge_agent.ini vxlan local_ip $HOST_IP
 crudini --set /etc/neutron/plugins/ml2/linuxbridge_agent.ini securitygroup enable_security_group true
 crudini --set /etc/neutron/plugins/ml2/linuxbridge_agent.ini securitygroup firewall_driver neutron.agent.linux.iptables_firewall.IptablesFirewallDriver
 
@@ -94,12 +94,12 @@ crudini --set /etc/neutron/dhcp_agent.ini DEFAULT dhcp_driver neutron.agent.linu
 crudini --set /etc/neutron/dhcp_agent.ini DEFAULT enable_isolated_metadata true
 
 echo -e "\nediting metadata_agent.ini.conf"
-crudini --set /etc/neutron/metadata_agent.ini DEFAULT nova_metadata_host $(grep DEFAULT_URL ../.env | cut -d '=' -f2)
+crudini --set /etc/neutron/metadata_agent.ini DEFAULT nova_metadata_host $DEFAULT_URL
 crudini --set /etc/neutron/metadata_agent.ini DEFAULT metadata_proxy_shared_secret $(grep METADATA_PROXY_SHARED_SECRET ../.env | cut -d '=' -f2)
 
 echo -e "\nediting nova.conf"
-crudini --set /etc/nova/nova.conf neutron url http://$(grep DEFAULT_URL ../.env | cut -d '=' -f2):9696
-crudini --set /etc/nova/nova.conf neutron auth_url http://$(grep DEFAULT_URL ../.env | cut -d '=' -f2):5000
+crudini --set /etc/nova/nova.conf neutron url http://$DEFAULT_URL:9696
+crudini --set /etc/nova/nova.conf neutron auth_url http://$DEFAULT_URL:5000
 crudini --set /etc/nova/nova.conf neutron auth_type password
 crudini --set /etc/nova/nova.conf neutron project_domain_name $OS_PROJECT_DOMAIN_NAME 
 crudini --set /etc/nova/nova.conf neutron user_domain_name $OS_USER_DOMAIN_NAME 

@@ -18,7 +18,7 @@ apt install -y memcached
 
 echo -e "\nEcho to /etc/hosts add DEFAULT_URL"
 
-echo -e "\n$(grep HOST_IP ../.env | cut -d '=' -f2) $(grep DEFAULT_URL ../.env | cut -d '=' -f2)" >> /etc/hosts
+echo -e "\n$HOST_IP $DEFAULT_URL" >> /etc/hosts
 
 echo -e "Installing RabbitMQ"
 
@@ -45,9 +45,9 @@ systemctl status rabbitmq-server.service
 rabbitmq-plugins enable rabbitmq_management
 
 # set rabbitmq details
-rabbitmqctl add_user $(grep rabbitMQ_USER ../.env | cut -d '=' -f2) $(grep rabbitMQ_PASSWORD ../.env | cut -d '=' -f2)
-rabbitmqctl set_user_tags $(grep rabbitMQ_USER ../.env | cut -d '=' -f2) administrator
-rabbitmqctl set_permissions -p $(grep rabbitMQ_PATH ../.env | cut -d '=' -f2) $(grep rabbitMQ_USER ../.env | cut -d '=' -f2) ".*" ".*" ".*"
+rabbitmqctl add_user $rabbitMQ_USER $rabbitMQ_PASSWORD
+rabbitmqctl set_user_tags $rabbitMQ_USER administrator
+rabbitmqctl set_permissions -p $rabbitMQ_PATH $rabbitMQ_USER ".*" ".*" ".*"
 
 echo -e "Install Crudini"
 apt install -y crudini

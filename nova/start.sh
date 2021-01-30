@@ -14,7 +14,7 @@ mysql -e "source nova.sql";
 
 # export variables
 echo -e "\nExport environment variable"
-export OS_USERNAME=$(grep OS_USERNAME ../.env | cut -d '=' -f2)
+export OS_USERNAME=$OS_USERNAME
 export OS_PASSWORD=$(grep OS_PASSWORD ../.env | cut -d '=' -f2)
 export OS_PROJECT_NAME=$(grep OS_PROJECT_NAME ../.env | cut -d '=' -f2)
 export OS_USER_DOMAIN_NAME=$(grep OS_USER_DOMAIN_NAME ../.env | cut -d '=' -f2)
@@ -28,9 +28,9 @@ openstack role add --project service --user $(grep NOVA_USER ../.env | cut -d '=
 
 openstack service create --name $(grep NOVA_USER ../.env | cut -d '=' -f2) --description "OpenStack Compute" compute
 
-openstack endpoint create --region RegionOne compute public http://$(grep DEFAULT_URL ../.env | cut -d '=' -f2):8774/v2.1
-openstack endpoint create --region RegionOne compute internal http://$(grep DEFAULT_URL ../.env | cut -d '=' -f2):8774/v2.1
-openstack endpoint create --region RegionOne compute admin http://$(grep DEFAULT_URL ../.env | cut -d '=' -f2):8774/v2.1
+openstack endpoint create --region RegionOne compute public http://$DEFAULT_URL:8774/v2.1
+openstack endpoint create --region RegionOne compute internal http://$DEFAULT_URL:8774/v2.1
+openstack endpoint create --region RegionOne compute admin http://$DEFAULT_URL:8774/v2.1
 
 echo "install nova API"
 apt install -y nova-api nova-conductor nova-novncproxy nova-scheduler
@@ -39,19 +39,19 @@ apt install -y nova-compute
 echo "editting nova.conf"
 
 #change api_db and db credential
-crudini --set /etc/nova/nova.conf api_database connection mysql+pymysql://$(grep NOVA_DB_USER ../.env | cut -d '=' -f2):$(grep NOVA_DB_PASSWORD ../.env | cut -d '=' -f2)@$(grep DEFAULT_URL ../.env | cut -d '=' -f2)/$(grep NOVA_API_DB_NAME ../.env | cut -d '=' -f2)
-crudini --set /etc/nova/nova.conf database connection mysql+pymysql://$(grep NOVA_DB_USER ../.env | cut -d '=' -f2):$(grep NOVA_DB_PASSWORD ../.env | cut -d '=' -f2)@$(grep DEFAULT_URL ../.env | cut -d '=' -f2)/$(grep NOVA_DB_NAME ../.env | cut -d '=' -f2)
+crudini --set /etc/nova/nova.conf api_database connection mysql+pymysql://$(grep NOVA_DB_USER ../.env | cut -d '=' -f2):$(grep NOVA_DB_PASSWORD ../.env | cut -d '=' -f2)@$DEFAULT_URL/$(grep NOVA_API_DB_NAME ../.env | cut -d '=' -f2)
+crudini --set /etc/nova/nova.conf database connection mysql+pymysql://$(grep NOVA_DB_USER ../.env | cut -d '=' -f2):$(grep NOVA_DB_PASSWORD ../.env | cut -d '=' -f2)@$DEFAULT_URL/$(grep NOVA_DB_NAME ../.env | cut -d '=' -f2)
 
 #change rabit mq message
-crudini --set /etc/nova/nova.conf DEFAULT transport_url rabbit://$(grep rabbitMQ_USER ../.env | cut -d '=' -f2):$(grep rabbitMQ_PASSWORD ../.env | cut -d '=' -f2)@$(grep DEFAULT_URL ../.env | cut -d '=' -f2):5672 
+crudini --set /etc/nova/nova.conf DEFAULT transport_url rabbit://$rabbitMQ_USER:$rabbitMQ_PASSWORD@$DEFAULT_URL:5672 
 
 #change api and keystone auth token
 crudini --set /etc/nova/nova.conf api auth_strategy keystone 
 
 
-crudini --set /etc/nova/nova.conf keystone_authtoken www_authenticate_uri http://$(grep DEFAULT_URL ../.env | cut -d '=' -f2):5000/ 
-crudini --set /etc/nova/nova.conf keystone_authtoken auth_url http://$(grep DEFAULT_URL ../.env | cut -d '=' -f2):5000/ 
-crudini --set /etc/nova/nova.conf keystone_authtoken memcached_servers $(grep DEFAULT_URL ../.env | cut -d '=' -f2):11211 
+crudini --set /etc/nova/nova.conf keystone_authtoken www_authenticate_uri http://$DEFAULT_URL:5000/ 
+crudini --set /etc/nova/nova.conf keystone_authtoken auth_url http://$DEFAULT_URL:5000/ 
+crudini --set /etc/nova/nova.conf keystone_authtoken memcached_servers $DEFAULT_URL:11211 
 crudini --set /etc/nova/nova.conf keystone_authtoken auth_type password 
 crudini --set /etc/nova/nova.conf keystone_authtoken project_domain_name $OS_PROJECT_DOMAIN_NAME 
 crudini --set /etc/nova/nova.conf keystone_authtoken user_domain_name $OS_USER_DOMAIN_NAME
@@ -59,15 +59,15 @@ crudini --set /etc/nova/nova.conf keystone_authtoken project_name service
 crudini --set /etc/nova/nova.conf keystone_authtoken username $(grep NOVA_USER ../.env | cut -d '=' -f2) 
 crudini --set /etc/nova/nova.conf keystone_authtoken password $(grep NOVA_PASSWORD ../.env | cut -d '=' -f2)
 #change ip
-crudini --set /etc/nova/nova.conf DEFAULT my_ip $(grep HOST_IP ../.env | cut -d '=' -f2)
+crudini --set /etc/nova/nova.conf DEFAULT my_ip $HOST_IP
 #vnc
 crudini --set /etc/nova/nova.conf vnc enabled true 
 crudini --set /etc/nova/nova.conf vnc server_listen 0.0.0.0
-crudini --set /etc/nova/nova.conf vnc server_proxyclient_address $(grep DEFAULT_URL ../.env | cut -d '=' -f2)
-crudini --set /etc/nova/nova.conf vnc novncproxy_base_url http://$(grep DEFAULT_URL ../.env | cut -d '=' -f2):6080/vnc_auto.html 
+crudini --set /etc/nova/nova.conf vnc server_proxyclient_address $DEFAULT_URL
+crudini --set /etc/nova/nova.conf vnc novncproxy_base_url http://$DEFAULT_URL:6080/vnc_auto.html 
 
 #glance
-crudini --set /etc/nova/nova.conf glance api_servers http://$(grep DEFAULT_URL ../.env | cut -d '=' -f2):9292 
+crudini --set /etc/nova/nova.conf glance api_servers http://$DEFAULT_URL:9292 
 
 #oslo_concurrency
 crudini --set /etc/nova/nova.conf oslo_concurrency lock_path=/var/lib/nova/tmp 
@@ -78,9 +78,9 @@ crudini --set /etc/nova/nova.conf placement project_domain_name $OS_PROJECT_DOMA
 crudini --set /etc/nova/nova.conf placement project_name service 
 crudini --set /etc/nova/nova.conf placement auth_type password 
 crudini --set /etc/nova/nova.conf placement user_domain_name $OS_USER_DOMAIN_NAME 
-crudini --set /etc/nova/nova.conf placement auth_url http://$(grep DEFAULT_URL ../.env | cut -d '=' -f2):5000/v3 
-crudini --set /etc/nova/nova.conf placement username $(grep PLACEMENT_USER ../.env | cut -d '=' -f2) 
-crudini --set /etc/nova/nova.conf placement password $(grep PLACEMENT_PASSWORD ../.env | cut -d '=' -f2)
+crudini --set /etc/nova/nova.conf placement auth_url http://$DEFAULT_URL:5000/v3 
+crudini --set /etc/nova/nova.conf placement username $PLACEMENT_USER 
+crudini --set /etc/nova/nova.conf placement password $PLACEMENT_PASSWORD
 
 crudini --set /etc/nova/nova.conf libvirt inject_password true
 crudini --set /etc/nova/nova.conf libvirt inject_key true
