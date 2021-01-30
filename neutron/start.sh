@@ -74,7 +74,7 @@ crudini --set /etc/neutron/plugins/ml2/ml2_conf.ini ml2 type_drivers flat,vlan,v
 crudini --set /etc/neutron/plugins/ml2/ml2_conf.ini ml2 tenant_network_types vxlan
 crudini --set /etc/neutron/plugins/ml2/ml2_conf.ini ml2 mechanism_drivers linuxbridge
 crudini --set /etc/neutron/plugins/ml2/ml2_conf.ini ml2 extension_drivers port_security
-crudini --set /etc/neutron/plugins/ml2/ml2_conf.ini ml2_type_flat flat_networks *
+crudini --set /etc/neutron/plugins/ml2/ml2_conf.ini ml2_type_flat flat_networks provider
 crudini --set /etc/neutron/plugins/ml2/ml2_conf.ini ml2_type_vxlan vni_ranges 1:1000
 crudini --set /etc/neutron/plugins/ml2/ml2_conf.ini securitygroup enable_ipset true
 
