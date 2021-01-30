@@ -95,6 +95,7 @@ su -s /bin/sh -c "nova-manage cell_v2 map_cell0" nova
 su -s /bin/sh -c "nova-manage cell_v2 create_cell --name=cell1 --verbose" nova
 su -s /bin/sh -c "nova-manage db sync" nova
 su -s /bin/sh -c "nova-manage cell_v2 list_cells" nova
+su -s /bin/sh -c "nova-manage cell_v2 simple_cell_setup" nova
 
 echo "finalize installation"
 
