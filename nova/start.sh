@@ -22,7 +22,7 @@ export OS_PROJECT_DOMAIN_NAME=$(grep OS_PROJECT_DOMAIN_NAME ../.env | cut -d '='
 export OS_AUTH_URL=$(grep OS_AUTH_URL ../.env | cut -d '=' -f2)
 export OS_IDENTITY_API_VERSION=$(grep OS_IDENTITY_API_VERSION ../.env | cut -d '=' -f2)
 
-echo "creating openstack user 'nova'"
+echo -e "\nCreating openstack user 'nova'"
 openstack user create --domain $OS_PROJECT_DOMAIN_NAME --password "$NOVA_PASSWORD" $NOVA_USER
 openstack role add --project service --user $NOVA_USER admin
 
@@ -32,11 +32,11 @@ openstack endpoint create --region RegionOne compute public http://$DEFAULT_URL:
 openstack endpoint create --region RegionOne compute internal http://$DEFAULT_URL:8774/v2.1
 openstack endpoint create --region RegionOne compute admin http://$DEFAULT_URL:8774/v2.1
 
-echo "install nova API"
+echo -e "\nInstall nova API"
 apt install -y nova-api nova-conductor nova-novncproxy nova-scheduler
 apt install -y nova-compute
 
-echo "editting nova.conf"
+echo -e "\nEditting nova.conf"
 
 #change api_db and db credential
 crudini --set /etc/nova/nova.conf api_database connection mysql+pymysql://$NOVA_DB_USER:$NOVA_DB_PASSWORD@$DEFAULT_URL/$NOVA_API_DB_NAME

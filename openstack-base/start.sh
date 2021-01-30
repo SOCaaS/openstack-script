@@ -31,7 +31,7 @@ apt update
 
 apt install -y erlang
 
-echo -e"Install RabbitMQ"
+echo -e "\nInstall RabbitMQ"
 #add rabbitmq Repository to Ubuntu
 apt install -y apt-transport-https
 wget -O- https://dl.bintray.com/rabbitmq/Keys/rabbitmq-release-signing-key.asc | apt-key add -
@@ -49,5 +49,5 @@ rabbitmqctl add_user $rabbitMQ_USER $rabbitMQ_PASSWORD
 rabbitmqctl set_user_tags $rabbitMQ_USER administrator
 rabbitmqctl set_permissions -p $rabbitMQ_PATH $rabbitMQ_USER ".*" ".*" ".*"
 
-echo -e "Install Crudini"
+echo -e "\nInstall Crudini"
 apt install -y crudini

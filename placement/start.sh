@@ -22,26 +22,26 @@ export OS_AUTH_URL=$(grep OS_AUTH_URL ../.env | cut -d '=' -f2)
 export OS_IDENTITY_API_VERSION=$(grep OS_IDENTITY_API_VERSION ../.env | cut -d '=' -f2)
 
 # create placement user and give admin role
-echo "creating openstack user 'placement'"
+echo -e "\nCreating openstack user 'placement'"
 openstack user create --domain $OS_PROJECT_DOMAIN_NAME --password "$PLACEMENT_PASSWORD" $PLACEMENT_USER
 openstack role add --project service --user $PLACEMENT_USER admin
 
 # Create the Placement API entry in the service catalog
-echo "create API entry in the service catalog"
+echo -e "\nCreate API entry in the service catalog"
 openstack service create --name $PLACEMENT_USER --description "Placement API" placement
 
 # Create the Placement API service endpoints
-echo "creating API service endpoints"
+echo -e "\nCreating API service endpoints"
 openstack endpoint create --region RegionOne placement public http://$DEFAULT_URL:8778
 openstack endpoint create --region RegionOne placement internal http://$DEFAULT_URL:8778
 openstack endpoint create --region RegionOne placement admin http://$DEFAULT_URL:8778
 
 # install placement api
-echo "installing placement-api"
+echo -e "\nInstalling placement-api"
 apt install -y placement-api
 
 # edit placement.conf
-echo "editing placement.conf"
+echo -e "\nEditing placement.conf"
 
 crudini --set /etc/placement/placement.conf connection mysql+pymysql://$PLACEMENT_DB_USER:$PLACEMENT_DB_PASSWORD@$DEFAULT_URL/$PLACEMENT_DB_NAME
 
@@ -57,11 +57,11 @@ crudini --set /etc/placement/placement.conf keystone_authtoken username $PLACEME
 crudini --set /etc/placement/placement.conf keystone_authtoken password $PLACEMENT_PASSWORD
 
 # populate placement database
-echo "populate placement database"
+echo -e "\nPopulate placement database"
 su -s /bin/sh -c "placement-manage db sync" placement
 
 # restart server
-echo "restart apache2 server"
+echo -e "\nRestart apache2 server"
 service apache2 restart
 
 
