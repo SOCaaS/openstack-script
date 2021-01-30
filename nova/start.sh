@@ -96,7 +96,7 @@ su -s /bin/sh -c "nova-manage cell_v2 create_cell --name=cell1 --verbose" nova
 su -s /bin/sh -c "nova-manage db sync" nova
 su -s /bin/sh -c "nova-manage cell_v2 list_cells" nova
 
-echo "finalize installation"
+echo -e "\nFinalize installation"
 
 service nova-api restart
 service nova-scheduler restart
