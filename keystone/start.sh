@@ -31,7 +31,7 @@ keystone-manage credential_setup --keystone-user keystone --keystone-group keyst
 
 # Bootstrap the Identity service
 echo -e "\nBootstrap identity services"
-keystone-manage bootstrap --bootstrap-password $(grep OS_PASSWORD ../.env | cut -d '=' -f2) \
+keystone-manage bootstrap --bootstrap-password $OS_PASSWORD \
   --bootstrap-admin-url http://$DEFAULT_URL:5000/v3/ \
   --bootstrap-internal-url http://$DEFAULT_URL:5000/v3/ \
   --bootstrap-public-url http://$DEFAULT_URL:5000/v3/ \
