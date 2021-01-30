@@ -2,27 +2,27 @@ set -e
 apt update
 apt-get -o Dpkg::Options::='--force-confold' --force-yes -fuy dist-upgrade
 
-echo -e "Install Net-Tools"
+echo -e "\nInstall Net-Tools"
 apt install -y net-tools
 
-echo -e "Install Openstack Client"
+echo -e "\nInstall Openstack Client"
 snap install openstackclients --classic
 
-echo -e "Installing Mysql"
+echo -e "\nInstalling Mysql"
 apt install -y mysql-server
 
 service mysql status
 
-echo -e "Install memcache server"
+echo -e "\nInstall memcache server"
 apt install -y memcached
 
 echo -e "\nEcho to /etc/hosts add DEFAULT_URL"
 
 echo -e "\n$HOST_IP $DEFAULT_URL" >> /etc/hosts
 
-echo -e "Installing RabbitMQ"
+echo -e "\nInstalling RabbitMQ"
 
-echo -e "Installing Erlang"
+echo -e "\nInstalling Erlang"
 
 apt-get install -y wget
 wget -O- https://packages.erlang-solutions.com/ubuntu/erlang_solutions.asc | apt-key add -

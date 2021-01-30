@@ -13,7 +13,7 @@ echo -e "\nInstalling keystone"
 apt install -y keystone
 
 # edit keystone.conf
-echo "editing keystone.conf"
+echo -e "\nEditing keystone.conf"
 crudini --set /etc/keystone/keystone.conf database connection mysql+pymysql://$KEYSTONE_DB_USER:$KEYSTONE_DB_PASSWORD@$DEFAULT_URL/$KEYSTONE_DB_NAME
 
 crudini --set /etc/keystone/keystone.conf token provider fernet
