@@ -81,7 +81,8 @@ echo -e "\nPopulate nova-api database"
 
 su -s /bin/sh -c "nova-manage api_db sync" nova
 su -s /bin/sh -c "nova-manage cell_v2 map_cell0" nova
-su -s /bin/sh -c "nova-manage cell_v2 create_cell --name=cell1 --verbose" nova
+su -s /bin/sh -c "nova-manage cell_v2 simple_cell_setup" nova
+# su -s /bin/sh -c "nova-manage cell_v2 create_cell --name=cell1 --verbose" nova
 su -s /bin/sh -c "nova-manage db sync" nova
 su -s /bin/sh -c "nova-manage cell_v2 list_cells" nova
 
@@ -97,7 +98,6 @@ crudini --set /etc/nova/nova-compute.conf libvirt virt_type kvm
 service nova-compute restart
 
 su -s /bin/sh -c "nova-manage cell_v2 discover_hosts --verbose" nova
-su -s /bin/sh -c "nova-manage cell_v2 simple_cell_setup" nova
 
 crudini --set /etc/nova/nova-compute.conf scheduler discover_hosts_in_cells_interval 300
 
