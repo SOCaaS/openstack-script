@@ -91,4 +91,4 @@ cd ..
 
 systemctl restart tailon.service
 
-echo -e "Finish, all service has been deployed!"
+echo -e "\nFinish, all service has been deployed!"
