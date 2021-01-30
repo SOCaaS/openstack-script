@@ -65,8 +65,8 @@ crudini --set /etc/neutron/neutron.conf nova project_domain_name $OS_PROJECT_DOM
 crudini --set /etc/neutron/neutron.conf nova user_domain_name $OS_USER_DOMAIN_NAME
 crudini --set /etc/neutron/neutron.conf nova region_name RegionOne
 crudini --set /etc/neutron/neutron.conf nova project_name service
-crudini --set /etc/neutron/neutron.conf nova username $(grep NOVA_USER ../.env | cut -d '=' -f2)
-crudini --set /etc/neutron/neutron.conf nova password $(grep NOVA_PASSWORD ../.env | cut -d '=' -f2)
+crudini --set /etc/neutron/neutron.conf nova username $NOVA_USER
+crudini --set /etc/neutron/neutron.conf nova password $NOVA_PASSWORD
 crudini --set /etc/neutron/neutron.conf oslo_concurrency lock_path /var/lib/neutron/tmp
 
 echo -e "\nml2_conf.ini"

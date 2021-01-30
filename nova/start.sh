@@ -3,11 +3,11 @@ apt update
 
 
 echo -e "\n Create a nova sql user"
-sed -i -e "s|{{ NOVA_API_DB_NAME }}|$(grep NOVA_API_DB_NAME ../.env | cut -d '=' -f2)|g" ./nova.sql
-sed -i -e "s|{{ NOVA_CELL0_DB_NAME }}|$(grep NOVA_CELL0_DB_NAME ../.env | cut -d '=' -f2)|g" ./nova.sql
-sed -i -e "s|{{ NOVA_DB_NAME }}|$(grep NOVA_DB_NAME ../.env | cut -d '=' -f2)|g" ./nova.sql
-sed -i -e "s|{{ NOVA_DB_USER }}|$(grep NOVA_DB_USER ../.env | cut -d '=' -f2)|g" ./nova.sql
-sed -i -e "s|{{ NOVA_DB_PASSWORD }}|$(grep NOVA_DB_PASSWORD ../.env | cut -d '=' -f2)|g" ./nova.sql
+sed -i -e "s|{{ NOVA_API_DB_NAME }}|$NOVA_API_DB_NAME|g" ./nova.sql
+sed -i -e "s|{{ NOVA_CELL0_DB_NAME }}|$NOVA_CELL0_DB_NAME|g" ./nova.sql
+sed -i -e "s|{{ NOVA_DB_NAME }}|$NOVA_DB_NAME|g" ./nova.sql
+sed -i -e "s|{{ NOVA_DB_USER }}|$NOVA_DB_USER|g" ./nova.sql
+sed -i -e "s|{{ NOVA_DB_PASSWORD }}|$NOVA_DB_PASSWORD|g" ./nova.sql
 
 mysql -e "source nova.sql";
 
@@ -23,10 +23,10 @@ export OS_AUTH_URL=$(grep OS_AUTH_URL ../.env | cut -d '=' -f2)
 export OS_IDENTITY_API_VERSION=$(grep OS_IDENTITY_API_VERSION ../.env | cut -d '=' -f2)
 
 echo "creating openstack user 'nova'"
-openstack user create --domain $OS_PROJECT_DOMAIN_NAME --password "$(grep NOVA_PASSWORD ../.env | cut -d '=' -f2)" $(grep NOVA_USER ../.env | cut -d '=' -f2)
-openstack role add --project service --user $(grep NOVA_USER ../.env | cut -d '=' -f2) admin
+openstack user create --domain $OS_PROJECT_DOMAIN_NAME --password "$NOVA_PASSWORD" $NOVA_USER
+openstack role add --project service --user $NOVA_USER admin
 
-openstack service create --name $(grep NOVA_USER ../.env | cut -d '=' -f2) --description "OpenStack Compute" compute
+openstack service create --name $NOVA_USER --description "OpenStack Compute" compute
 
 openstack endpoint create --region RegionOne compute public http://$DEFAULT_URL:8774/v2.1
 openstack endpoint create --region RegionOne compute internal http://$DEFAULT_URL:8774/v2.1
@@ -39,8 +39,8 @@ apt install -y nova-compute
 echo "editting nova.conf"
 
 #change api_db and db credential
-crudini --set /etc/nova/nova.conf api_database connection mysql+pymysql://$(grep NOVA_DB_USER ../.env | cut -d '=' -f2):$(grep NOVA_DB_PASSWORD ../.env | cut -d '=' -f2)@$DEFAULT_URL/$(grep NOVA_API_DB_NAME ../.env | cut -d '=' -f2)
-crudini --set /etc/nova/nova.conf database connection mysql+pymysql://$(grep NOVA_DB_USER ../.env | cut -d '=' -f2):$(grep NOVA_DB_PASSWORD ../.env | cut -d '=' -f2)@$DEFAULT_URL/$(grep NOVA_DB_NAME ../.env | cut -d '=' -f2)
+crudini --set /etc/nova/nova.conf api_database connection mysql+pymysql://$NOVA_DB_USER:$NOVA_DB_PASSWORD@$DEFAULT_URL/$NOVA_API_DB_NAME
+crudini --set /etc/nova/nova.conf database connection mysql+pymysql://$NOVA_DB_USER:$NOVA_DB_PASSWORD@$DEFAULT_URL/$NOVA_DB_NAME
 
 #change rabit mq message
 crudini --set /etc/nova/nova.conf DEFAULT transport_url rabbit://$rabbitMQ_USER:$rabbitMQ_PASSWORD@$DEFAULT_URL:5672 
@@ -56,8 +56,8 @@ crudini --set /etc/nova/nova.conf keystone_authtoken auth_type password
 crudini --set /etc/nova/nova.conf keystone_authtoken project_domain_name $OS_PROJECT_DOMAIN_NAME 
 crudini --set /etc/nova/nova.conf keystone_authtoken user_domain_name $OS_USER_DOMAIN_NAME
 crudini --set /etc/nova/nova.conf keystone_authtoken project_name service 
-crudini --set /etc/nova/nova.conf keystone_authtoken username $(grep NOVA_USER ../.env | cut -d '=' -f2) 
-crudini --set /etc/nova/nova.conf keystone_authtoken password $(grep NOVA_PASSWORD ../.env | cut -d '=' -f2)
+crudini --set /etc/nova/nova.conf keystone_authtoken username $NOVA_USER 
+crudini --set /etc/nova/nova.conf keystone_authtoken password $NOVA_PASSWORD
 #change ip
 crudini --set /etc/nova/nova.conf DEFAULT my_ip $HOST_IP
 #vnc
