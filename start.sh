@@ -1,4 +1,22 @@
-echo -e "Start All Service at Once!"
+set -e
+echo "Starting OpenStack Script!"
+
+echo -e "\nCheck the Linux Version"
+source /etc/lsb-release
+if [ $DISTRIB_ID != Ubuntu ]
+then
+    echo -e "\nThis is not a Ubuntu System!"
+    exit 1
+fi
+
+if [ -f .env ]
+then
+    echo -e "\nImporting .env to Environment Variable"
+    set -o allexport; source .env; set +o allexport
+else 
+    echo -e "\nThere is no env file!"
+    exit 1
+fi
 
 echo -e "\nStart base Openstack!"
 cd ./openstack-base
