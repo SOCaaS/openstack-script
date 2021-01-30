@@ -37,7 +37,7 @@ pipeline {
                 sh '''#!/bin/bash
                     if [ $(cat /root/tfstate/script-openstack-do.tfstate | jq \'.["outputs"]["ids"]["value"][0]\') == null ] 
                     then 
-                        echo "This is clear!"; 
+                        echo "The server is being turn off!"; 
                     else
                         echo -e "\nDO Re-Build!"
                         doctl compute droplet-action rebuild $(cat /root/tfstate/script-openstack-do.tfstate | jq \'.["outputs"]["ids"]["value"][0]\' | sed \'s|"||g\' ) -t ${DIGITALOCEAN_TOKEN} --image ubuntu-20-04-x64 --wait

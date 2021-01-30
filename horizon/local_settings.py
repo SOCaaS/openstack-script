@@ -131,6 +131,17 @@ OPENSTACK_API_VERSIONS = {
     "volume": 2,
 }
 
+OPENSTACK_HYPERVISOR_FEATURES = {
+    'images_panel': True,
+    'key_pairs_panel': True,
+    'flavors_panel': False,
+    'domains_panel': False,
+    'users_panel': False,
+    'groups_panel': False,
+    'roles_panel': True,
+    'can_set_password': True
+}
+
 # The timezone of the server. This should correspond with the timezone
 # of your entire OpenStack installation, and hopefully be in UTC.
 TIME_ZONE = "UTC"
@@ -138,11 +149,11 @@ TIME_ZONE = "UTC"
 # Change this patch to the appropriate list of tuples containing
 # a key, label and static directory containing two files:
 # _variables.scss and _styles.scss
-#AVAILABLE_THEMES = [
-#    ('default', 'Default', 'themes/default'),
-#    ('material', 'Material', 'themes/material'),
-#    ('example', 'Example', 'themes/example'),
-#]
+AVAILABLE_THEMES = [
+   ('default', 'Default', 'themes/default'),
+   ('material', 'Material', 'themes/material'),
+   ('example', 'Example', 'themes/example'),
+]
 
 LOGGING = {
     'version': 1,

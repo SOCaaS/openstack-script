@@ -9,7 +9,7 @@ module "digitalocean" {
     servers             = [
         # {
         #     name = "openstack-deployment-testing1",
-        #     type = "s-8vcpu-16gb"
+        #     type = "s-4vcpu-8gb"
         # }
     ]
     public_key_name     = var.public_key_name
