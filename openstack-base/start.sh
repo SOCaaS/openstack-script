@@ -10,6 +10,17 @@ sed -i -e "s|nameserver.*|nameserver 1.1.1.1|g" /etc/resolv.conf
 echo -e "\nInstall Net-Tools"
 apt install -y net-tools
 
+echo -e "\nInstall OpenvSwitch"
+apt install -y openvswitch-ovn networking-ovn
+
+systemctl start openvswitch
+
+/usr/share/openvswitch/scripts/ovs-ctl start  --system-id="random"
+
+ovs-appctl -t ovsdb-server ovsdb-server/add-remote ptcp:6640:$HOST_IP
+
+systemctl start ovn-northd
+
 echo -e "\nInstall Openstack Client"
 snap install openstackclients --classic
 
