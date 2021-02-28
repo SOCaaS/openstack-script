@@ -13,13 +13,9 @@ apt install -y net-tools
 echo -e "\nInstall OpenvSwitch"
 apt install -y openvswitch-switch
 
-systemctl start openvswitch
-
 /usr/share/openvswitch/scripts/ovs-ctl start  --system-id="random"
 
 ovs-appctl -t ovsdb-server ovsdb-server/add-remote ptcp:6640:$HOST_IP
-
-systemctl start ovn-northd
 
 echo -e "\nInstall Openstack Client"
 snap install openstackclients --classic
