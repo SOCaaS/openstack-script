@@ -11,7 +11,7 @@ echo -e "\nInstall Net-Tools"
 apt install -y net-tools
 
 echo -e "\nInstall OpenvSwitch"
-apt install -y openvswitch-ovn networking-ovn
+apt install -y openvswitch-switch
 
 systemctl start openvswitch
 
