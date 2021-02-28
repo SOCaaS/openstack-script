@@ -65,7 +65,8 @@ systemctl restart tailon.service
 
 echo -e "\nStart Neutron!"
 cd ./neutron
-./start.sh
+# ./start.sh
+./start-openvswitch.sh
 cd ..
 
 systemctl restart tailon.service
