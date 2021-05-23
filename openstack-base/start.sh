@@ -2,7 +2,7 @@ set -e
 
 echo -e "\nUpdate and Upgrade"
 apt update
-apt-get -o Dpkg::Options::='--force-confold' --force-yes -fuy dist-upgrade
+DEBIAN_FRONTEND=noninteractive apt-get -o Dpkg::Options::='--force-confold' --force-yes -fuy dist-upgrade
 
 echo -e "\nNameserver to Cloudflare"
 sed -i -e "s|nameserver.*|nameserver 1.1.1.1|g" /etc/resolv.conf
