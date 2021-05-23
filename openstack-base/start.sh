@@ -44,6 +44,14 @@ apt update
 apt install -y erlang
 
 echo -e "\nInstall RabbitMQ"
+
+## Team RabbitMQ's main signing key
+sudo apt-key adv --keyserver "hkps://keys.openpgp.org" --recv-keys "0x0A9AF2115F4687BD29803A206B73A36E6026DFCA"
+## Launchpad PPA that provides modern Erlang releases
+sudo apt-key adv --keyserver "keyserver.ubuntu.com" --recv-keys "F77F1EDA57EBB1CC"
+## PackageCloud RabbitMQ repository
+curl -1sLf 'https://packagecloud.io/rabbitmq/rabbitmq-server/gpgkey' | sudo apt-key add -
+
 #add rabbitmq Repository to Ubuntu
 apt install -y apt-transport-https
 wget -O- https://dl.bintray.com/rabbitmq/Keys/rabbitmq-release-signing-key.asc | apt-key add -
