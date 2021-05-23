@@ -122,7 +122,7 @@ service nova-compute restart
 su -s /bin/sh -c "nova-manage cell_v2 discover_hosts --verbose" nova
 
 echo -e "\nRestart linux bridge agent"
-service neutron-linuxbridge-agent restart
+# service neutron-linuxbridge-agent restart
 
 echo -e "\nCheck Neutron Installation"
 openstack network agent list
