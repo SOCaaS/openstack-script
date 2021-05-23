@@ -27,13 +27,13 @@ openstack endpoint create --region RegionOne network internal http://$DEFAULT_UR
 openstack endpoint create --region RegionOne network admin http://$DEFAULT_URL:9696
 
 echo -e "\nInstalling networking option1"
-apt install -y neutron-server neutron-plugin-ml2 neutron-linuxbridge-agent neutron-dhcp-agent neutron-metadata-agent neutron-l3-agent
+apt install -y neutron-server neutron-plugin-ml2 neutron-dhcp-agent neutron-metadata-agent neutron-l3-agent
 
 echo -e "\nEditting neutron.conf"
 crudini --set /etc/neutron/neutron.conf database connection mysql+pymysql://$NEUTRON_DB_USER:$NEUTRON_DB_PASSWORD@$DEFAULT_URL/$NEUTRON_DB_NAME
 
 crudini --set /etc/neutron/neutron.conf DEFAULT core_plugin neutron.plugins.ml2.plugin.Ml2Plugin
-crudini --set /etc/neutron/neutron.conf DEFAULT service_plugins router
+crudini --set /etc/neutron/neutron.conf DEFAULT service_plugins networking_ovn.l3.l3_ovn.OVNL3RouterPlugin
 crudini --set /etc/neutron/neutron.conf DEFAULT transport_url rabbit://$rabbitMQ_USER:$rabbitMQ_PASSWORD@$DEFAULT_URL:5672
 crudini --set /etc/neutron/neutron.conf DEFAULT allow_overlapping_ips true
 
@@ -63,22 +63,19 @@ crudini --set /etc/neutron/neutron.conf nova password $NOVA_PASSWORD
 crudini --set /etc/neutron/neutron.conf oslo_concurrency lock_path /var/lib/neutron/tmp
 
 echo -e "\nEdit ml2_conf.ini"
-crudini --set /etc/neutron/plugins/ml2/ml2_conf.ini ml2 type_drivers flat,vlan,vxlan
-crudini --set /etc/neutron/plugins/ml2/ml2_conf.ini ml2 tenant_network_types vxlan
-crudini --set /etc/neutron/plugins/ml2/ml2_conf.ini ml2 mechanism_drivers linuxbridge
+crudini --set /etc/neutron/plugins/ml2/ml2_conf.ini ml2 type_drivers local,flat,vlan,geneve
+crudini --set /etc/neutron/plugins/ml2/ml2_conf.ini ml2 tenant_network_types geneve
+crudini --set /etc/neutron/plugins/ml2/ml2_conf.ini ml2 mechanism_drivers ovn
 crudini --set /etc/neutron/plugins/ml2/ml2_conf.ini ml2 extension_drivers port_security
 crudini --set /etc/neutron/plugins/ml2/ml2_conf.ini ml2_type_flat flat_networks provider
-# ,vbridge
-crudini --set /etc/neutron/plugins/ml2/ml2_conf.ini ml2_type_vxlan vni_ranges 1:1000
+crudini --set /etc/neutron/plugins/ml2/ml2_conf.ini ml2_type_geneve vni_ranges 1:65536
+crudini --set /etc/neutron/plugins/ml2/ml2_conf.ini ml2_type_geneve max_header_size 38
 crudini --set /etc/neutron/plugins/ml2/ml2_conf.ini securitygroup enable_ipset true
 
-echo -e "\nEdit linuxbridge_agent.ini"
-crudini --set /etc/neutron/plugins/ml2/linuxbridge_agent.ini linux_bridge physical_interface_mappings provider:eth0
-# ,vbridge:virbr0
-crudini --set /etc/neutron/plugins/ml2/linuxbridge_agent.ini vxlan enable_vxlan true
-crudini --set /etc/neutron/plugins/ml2/linuxbridge_agent.ini vxlan local_ip $HOST_IP
-crudini --set /etc/neutron/plugins/ml2/linuxbridge_agent.ini securitygroup enable_security_group true
-crudini --set /etc/neutron/plugins/ml2/linuxbridge_agent.ini securitygroup firewall_driver neutron.agent.linux.iptables_firewall.IptablesFirewallDriver
+echo -e "\nAdd OVN Configuration"
+crudini --set /etc/neutron/plugins/ml2/ml2_conf.ini ovn ovn_nb_connection tcp:$HOST_IP:6641
+crudini --set /etc/neutron/plugins/ml2/ml2_conf.ini ovn ovn_sb_connection tcp:$HOST_IP:6642
+crudini --set /etc/neutron/plugins/ml2/ml2_conf.ini ovn ovn_l3_scheduler OVN_L3_SCHEDULER
 
 echo -e "\nConfigure the Layer-3 Agent"
 crudini --set /etc/neutron/l3_agent.ini DEFAULT interface_driver linuxbridge
@@ -114,7 +111,7 @@ service nova-api restart
 
 echo -e "\nRestart networking services"
 service neutron-server restart
-# service neutron-linuxbridge-agent restart
+service neutron-linuxbridge-agent restart
 service neutron-dhcp-agent restart
 service neutron-metadata-agent restart
 
