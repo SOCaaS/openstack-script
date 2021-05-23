@@ -54,8 +54,6 @@ curl -1sLf 'https://packagecloud.io/rabbitmq/rabbitmq-server/gpgkey' | sudo apt-
 
 #add rabbitmq Repository to Ubuntu
 apt install -y apt-transport-https
-wget -O- https://dl.bintray.com/rabbitmq/Keys/rabbitmq-release-signing-key.asc | apt-key add -
-wget -O- https://www.rabbitmq.com/rabbitmq-release-signing-key.asc | apt-key add -
 echo "deb https://dl.bintray.com/rabbitmq-erlang/debian focal erlang-22.x" | tee /etc/apt/sources.list.d/rabbitmq.list
 apt update
 apt install -y rabbitmq-server
