@@ -111,7 +111,7 @@ service nova-api restart
 
 echo -e "\nRestart networking services"
 service neutron-server restart
-service neutron-linuxbridge-agent restart
+# service neutron-linuxbridge-agent restart
 service neutron-dhcp-agent restart
 service neutron-metadata-agent restart
 
