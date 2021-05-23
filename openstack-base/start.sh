@@ -34,14 +34,7 @@ echo -e "\n$HOST_IP $DEFAULT_URL" >> /etc/hosts
 
 echo -e "\nInstalling RabbitMQ"
 
-echo -e "\nInstalling Erlang"
-
 apt-get install -y wget
-wget -O- https://packages.erlang-solutions.com/ubuntu/erlang_solutions.asc | apt-key add -
-echo "deb https://packages.erlang-solutions.com/ubuntu focal contrib" | tee /etc/apt/sources.list.d/rabbitmq.list
-apt update
-
-apt install -y erlang
 
 echo -e "\nInstall RabbitMQ"
 
@@ -54,9 +47,37 @@ curl -1sLf 'https://packagecloud.io/rabbitmq/rabbitmq-server/gpgkey' | sudo apt-
 
 #add rabbitmq Repository to Ubuntu
 apt install -y apt-transport-https
-echo "deb https://dl.bintray.com/rabbitmq-erlang/debian focal erlang-22.x" | tee /etc/apt/sources.list.d/rabbitmq.list
-apt update
-apt install -y rabbitmq-server
+## Add apt repositories maintained by Team RabbitMQ
+sudo tee /etc/apt/sources.list.d/rabbitmq.list <<EOF
+## Provides modern Erlang/OTP releases
+##
+## "bionic" as distribution name should work for any reasonably recent Ubuntu or Debian release.
+## See the release to distribution mapping table in RabbitMQ doc guides to learn more.
+deb http://ppa.launchpad.net/rabbitmq/rabbitmq-erlang/ubuntu focal main
+deb-src http://ppa.launchpad.net/rabbitmq/rabbitmq-erlang/ubuntu focal main
+
+## Provides RabbitMQ
+##
+## "bionic" as distribution name should work for any reasonably recent Ubuntu or Debian release.
+## See the release to distribution mapping table in RabbitMQ doc guides to learn more.
+deb https://packagecloud.io/rabbitmq/rabbitmq-server/ubuntu/ focal main
+deb-src https://packagecloud.io/rabbitmq/rabbitmq-server/ubuntu/ focal main
+EOF
+
+## Update package indices
+sudo apt-get update -y
+
+echo -e "\nInstalling Erlang"
+
+## Install Erlang packages
+sudo apt-get install -y erlang-base \
+                        erlang-asn1 erlang-crypto erlang-eldap erlang-ftp erlang-inets \
+                        erlang-mnesia erlang-os-mon erlang-parsetools erlang-public-key \
+                        erlang-runtime-tools erlang-snmp erlang-ssl \
+                        erlang-syntax-tools erlang-tftp erlang-tools erlang-xmerl
+
+## Install rabbitmq-server and its dependencies
+sudo apt-get install rabbitmq-server -y --fix-missing
 
 systemctl status rabbitmq-server.service
 
